@@ -18,8 +18,6 @@ export function CreateCharacterIndex() {
         </p>
       </section>
 
-      <DemoForm />
-
       {/* Banner */}
       <div className="w-full mt-10 relative">
         <img

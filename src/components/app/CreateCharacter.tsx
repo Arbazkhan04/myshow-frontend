@@ -7,11 +7,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { GeneratingAnimation } from "./GeneratingAnimation";
 import { Shuffle, ArrowRight, ArrowLeft, Check, Smile, Frown, Sparkles, Zap, Wind, Drama, User, Palette, Volume2, Eye, Shirt, BookOpen, Stars } from "lucide-react";
 import { toast } from "sonner";
 import { IoMdFemale, IoMdMale, IoMdTransgender } from "react-icons/io";
 import { IoIosColorPalette } from "react-icons/io";
+import { VoiceSelector } from "@/pages/characters/create/character-voices-preview";
 
 interface CharacterData {
   name: string;
@@ -26,10 +28,15 @@ interface CharacterData {
   eyeColor: string;
   outfitStyle: string;
   backstory: string;
+  skinTone: string;
+  accessories: string[];
+  selectedVoiceId: string;
+  createCustomVoice: boolean;
 }
 
 interface CreateCharacterProps {
-  onCharacterCreated: (character: CharacterData) => void;
+  onCharacterCreated: (character: any) => void;
+  createdBy: string;
 }
 
 const artStyles = [
@@ -63,13 +70,14 @@ const voiceToneOptions = [
 ];
 
 const voiceAccents = ["Neutral", "American", "British", "Australian"];
-
+const skinTones = ["Fair", "Light", "Medium", "Olive", "Tan", "Brown", "Dark"];
 const hairColors = ["Black", "Brown", "Blonde", "Red", "Gray", "White", "Blue", "Pink", "Purple"];
 const hairStyles = ["Long", "Short", "Curly", "Spiky", "Wavy", "Bald", "Ponytail", "Braided"];
 const eyeColors = ["Brown", "Blue", "Green", "Gray", "Hazel", "Amber", "Violet"];
 const outfitStyles = ["Casual", "Formal", "Athletic", "Fantasy", "Futuristic", "Vintage", "Urban"];
+const accessoryOptions = ["Glasses", "Hat", "Jewelry", "Scarf", "Watch", "Tattoos", "Piercings", "Mask"];
 
-export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
+export function CreateCharacter({ onCharacterCreated, createdBy }: CreateCharacterProps) {
   const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [characterData, setCharacterData] = useState<CharacterData>({
@@ -84,7 +92,11 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
     hairStyle: "",
     eyeColor: "",
     outfitStyle: "",
-    backstory: ""
+    backstory: "",
+    skinTone: "",
+    accessories: [],
+    selectedVoiceId: "",
+    createCustomVoice: true // Default to custom voice tab
   });
 
   const updateData = (field: keyof CharacterData, value: any) => {
@@ -103,21 +115,74 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
     });
   };
 
+  const toggleAccessory = (accessory: string) => {
+    setCharacterData(prev => {
+      const current = prev.accessories;
+      if (current.includes(accessory)) {
+        return { ...prev, accessories: current.filter(a => a !== accessory) };
+      } else {
+        return { ...prev, accessories: [...current, accessory] };
+      }
+    });
+  };
+
   const randomizeAppearance = () => {
     updateData("hairColor", hairColors[Math.floor(Math.random() * hairColors.length)]);
     updateData("hairStyle", hairStyles[Math.floor(Math.random() * hairStyles.length)]);
     updateData("eyeColor", eyeColors[Math.floor(Math.random() * eyeColors.length)]);
     updateData("outfitStyle", outfitStyles[Math.floor(Math.random() * outfitStyles.length)]);
+    updateData("skinTone", skinTones[Math.floor(Math.random() * skinTones.length)]);
     toast.success("Appearance randomized!");
+  };
+
+  const formatCharacterData = (saveAsTemplate = false) => {
+    const formattedData: any = {
+      name: characterData.name,
+      art_style: characterData.artStyle.toLowerCase(),
+      gender: characterData.gender,
+      age_group: characterData.ageGroup.toLowerCase().replace(" ", "_"),
+      personality_traits: characterData.personality,
+      appearance: {
+        hair_color: characterData.hairColor,
+        hair_style: characterData.hairStyle,
+        eye_color: characterData.eyeColor,
+        skin_tone: characterData.skinTone,
+        outfit: characterData.outfitStyle,
+        accessories: characterData.accessories
+      },
+      backstory: characterData.backstory,
+      created_by: createdBy,
+      is_sample: false,
+      is_template: saveAsTemplate,
+      createCustomVoice: characterData.createCustomVoice
+    };
+
+    // Add voice data conditionally
+    if (characterData.createCustomVoice) {
+      formattedData.voice_tone = characterData.voiceTone;
+      formattedData.voice_accent = characterData.voiceAccent;
+    } else {
+      formattedData.characterVoice = characterData.selectedVoiceId;
+    }
+
+    return formattedData;
   };
 
   const handleGenerate = async (saveAsTemplate = false) => {
     setIsGenerating(true);
+    
+    // Format the data according to requirements
+    const formattedData = formatCharacterData(saveAsTemplate);
+    
+    // Log the formatted data to console
+    console.log("Character Data:", formattedData);
+    
     // Simulate AI generation with animation
     await new Promise(resolve => setTimeout(resolve, 3000));
     setIsGenerating(false);
-    onCharacterCreated(characterData);
+    onCharacterCreated(formattedData);
     toast.success(saveAsTemplate ? "Character saved as template!" : "Character created successfully!");
+    
     // Reset form
     setCharacterData({
       name: "",
@@ -131,7 +196,11 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
       hairStyle: "",
       eyeColor: "",
       outfitStyle: "",
-      backstory: ""
+      backstory: "",
+      skinTone: "",
+      accessories: [],
+      selectedVoiceId: "",
+      createCustomVoice: true
     });
     setStep(1);
   };
@@ -141,7 +210,15 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
       return characterData.name && characterData.artStyle && characterData.gender && characterData.ageGroup;
     }
     if (step === 2) {
-      return characterData.personality.length > 0 && characterData.voiceTone && characterData.voiceAccent;
+      if (characterData.personality.length === 0) return false;
+      
+      if (characterData.createCustomVoice) {
+        // Custom voice tab - require voice tone and accent
+        return characterData.voiceTone && characterData.voiceAccent;
+      } else {
+        // Select voice tab - require voice ID
+        return characterData.selectedVoiceId !== "";
+      }
     }
     return true;
   };
@@ -195,18 +272,22 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
                       key={style.name}
                       type="button"
                       onClick={() => updateData("artStyle", style.name)}
-                      className={`relative aspect-video rounded-lg border-2 overflow-hidden transition-all ${characterData.artStyle === style.name
+                      className={`relative aspect-video rounded-lg border-2 overflow-hidden transition-all ${
+                        characterData.artStyle === style.name
                           ? "border-white ring-2 ring-white/20"
                           : "border-border hover:border-primary/50"
-                        }`}
+                      }`}
                     >
                       <div
                         className="w-full h-full bg-cover bg-center"
                         style={{ backgroundImage: `url(${style.image})` }}
                       />
-                      <div className={`absolute inset-0 ${characterData.artStyle === style.name ? 'bg-black/20' : 'bg-black/40'} flex items-center justify-center`}>
-                        <span className={`font-medium ${characterData.artStyle === style.name ? "text-white" : "text-white"
-                          }`}>
+                      <div className={`absolute inset-0 ${
+                        characterData.artStyle === style.name ? 'bg-black/20' : 'bg-black/40'
+                      } flex items-center justify-center`}>
+                        <span className={`font-medium ${
+                          characterData.artStyle === style.name ? "text-white" : "text-white"
+                        }`}>
                           {style.name}
                         </span>
                       </div>
@@ -228,13 +309,15 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
                         key={gender.value}
                         type="button"
                         onClick={() => updateData("gender", gender.value)}
-                        className={`p-4 rounded-lg border-2 transition-all flex flex-col items-center gap-2 ${characterData.gender === gender.value
+                        className={`p-4 rounded-lg border-2 transition-all flex flex-col items-center gap-2 ${
+                          characterData.gender === gender.value
                             ? "border-white " + gender.color
                             : "border-border hover:border-primary/50"
-                          }`}
+                        }`}
                       >
-                        <IconComponent className={`w-6 h-6 ${characterData.gender === gender.value ? "text-white" : "text-muted-foreground"
-                          }`} />
+                        <IconComponent className={`w-6 h-6 ${
+                          characterData.gender === gender.value ? "text-white" : "text-muted-foreground"
+                        }`} />
                         <span className={characterData.gender === gender.value ? "text-white" : "text-foreground"}>
                           {gender.label}
                         </span>
@@ -284,10 +367,11 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
                       key={trait}
                       onClick={() => togglePersonality(trait)}
                       variant={characterData.personality.includes(trait) ? "default" : "secondary"}
-                      className={`cursor-pointer ${!characterData.personality.includes(trait) && characterData.personality.length >= 5
+                      className={`cursor-pointer ${
+                        !characterData.personality.includes(trait) && characterData.personality.length >= 5
                           ? "opacity-50 cursor-not-allowed"
                           : ""
-                        }`}
+                      }`}
                     >
                       {trait}
                     </Badge>
@@ -295,48 +379,76 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  <Volume2 className="w-4 h-4" />
-                  Voice Tone
-                </Label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {voiceToneOptions.map(({ value, icon: Icon }) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => updateData("voiceTone", value)}
-                      className={`p-4 rounded-lg border-2 transition-all flex items-center gap-3 ${characterData.voiceTone === value
-                          ? "border-primary bg-primary/10"
-                          : "border-border hover:border-primary/50"
-                        }`}
-                    >
-                      <Icon className={`w-5 h-5 ${characterData.voiceTone === value ? "text-primary" : "text-muted-foreground"
-                        }`} />
-                      <span className={characterData.voiceTone === value ? "text-primary" : "text-foreground"}>
-                        {value}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <Tabs 
+                value={characterData.createCustomVoice ? "custom" : "select"} 
+                onValueChange={(value) => updateData("createCustomVoice", value === "custom")}
+                className="w-full"
+              >
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="custom">Create Custom Voice</TabsTrigger>
+                  <TabsTrigger value="select">Select Voice</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="custom" className="space-y-6 mt-6">
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Volume2 className="w-4 h-4" />
+                      Voice Tone
+                    </Label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      {voiceToneOptions.map(({ value, icon: Icon }) => (
+                        <button
+                          key={value}
+                          type="button"
+                          onClick={() => updateData("voiceTone", value)}
+                          className={`p-4 rounded-lg border-2 transition-all flex items-center gap-3 ${
+                            characterData.voiceTone === value
+                              ? "border-primary bg-primary/10"
+                              : "border-border hover:border-primary/50"
+                          }`}
+                        >
+                          <Icon className={`w-5 h-5 ${
+                            characterData.voiceTone === value ? "text-primary" : "text-muted-foreground"
+                          }`} />
+                          <span className={characterData.voiceTone === value ? "text-primary" : "text-foreground"}>
+                            {value}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2">
-                  <Volume2 className="w-4 h-4" />
-                  Voice Accent
-                </Label>
-                <Select value={characterData.voiceAccent} onValueChange={(val) => updateData("voiceAccent", val)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select accent" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {voiceAccents.map(accent => (
-                      <SelectItem key={accent} value={accent}>{accent}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Volume2 className="w-4 h-4" />
+                      Voice Accent
+                    </Label>
+                    <Select value={characterData.voiceAccent} onValueChange={(val) => updateData("voiceAccent", val)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select accent" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {voiceAccents.map(accent => (
+                          <SelectItem key={accent} value={accent}>{accent}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="select" className="mt-6">
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Volume2 className="w-4 h-4" />
+                      Select Voice
+                    </Label>
+                    <VoiceSelector
+                      value={characterData.selectedVoiceId}
+                      onChange={(value) => updateData("selectedVoiceId", value)}
+                    />
+                  </div>
+                </TabsContent>
+              </Tabs>
             </motion.div>
           )}
 
@@ -399,6 +511,23 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
 
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2">
+                    <Palette className="w-4 h-4" />
+                    Skin Tone
+                  </Label>
+                  <Select value={characterData.skinTone} onValueChange={(val) => updateData("skinTone", val)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select skin tone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {skinTones.map(tone => (
+                        <SelectItem key={tone} value={tone}>{tone}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
                     <Shirt className="w-4 h-4" />
                     Outfit Style
                   </Label>
@@ -407,6 +536,25 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
                     onChange={(e) => updateData("outfitStyle", e.target.value)}
                     placeholder="e.g., Casual, Formal"
                   />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <Stars className="w-4 h-4" />
+                  Accessories
+                </Label>
+                <div className="flex flex-wrap gap-2">
+                  {accessoryOptions.map(accessory => (
+                    <Badge
+                      key={accessory}
+                      onClick={() => toggleAccessory(accessory)}
+                      variant={characterData.accessories.includes(accessory) ? "default" : "secondary"}
+                      className="cursor-pointer"
+                    >
+                      {accessory}
+                    </Badge>
+                  ))}
                 </div>
               </div>
 

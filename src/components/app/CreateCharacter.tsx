@@ -1,0 +1,477 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Textarea } from "../ui/textarea";
+import { Badge } from "../ui/badge";
+import { Progress } from "../ui/progress";
+import { GeneratingAnimation } from "./GeneratingAnimation";
+import { Shuffle, ArrowRight, ArrowLeft, Check, Smile, Frown, Sparkles, Zap, Wind, Drama, User, Palette, Volume2, Eye, Shirt, BookOpen, Stars } from "lucide-react";
+import { toast } from "sonner";
+import { IoMdFemale, IoMdMale, IoMdTransgender } from "react-icons/io";
+import { IoIosColorPalette } from "react-icons/io";
+
+interface CharacterData {
+  name: string;
+  artStyle: string;
+  gender: string;
+  ageGroup: string;
+  personality: string[];
+  voiceTone: string;
+  voiceAccent: string;
+  hairColor: string;
+  hairStyle: string;
+  eyeColor: string;
+  outfitStyle: string;
+  backstory: string;
+}
+
+interface CreateCharacterProps {
+  onCharacterCreated: (character: CharacterData) => void;
+}
+
+const artStyles = [
+  { name: "Anime", image: "/images/character-art-styles/anime.jpg" },
+  { name: "Cartoon", image: "/images/character-art-styles/cartoon.jpeg" },
+  { name: "Realistic", image: "/images/character-art-styles/real.PNG" },
+  { name: "Fantasy", image: "/images/character-art-styles/fantasy.webp" },
+  { name: "Sci-Fi", image: "/images/character-art-styles/sci-fi.jpg" },
+  { name: "3D", image: "/images/character-art-styles/3d.jpg" }
+];
+
+const genders = [
+  { value: "male", label: "Male", icon: IoMdMale, color: "bg-blue-500" },
+  { value: "female", label: "Female", icon: IoMdFemale, color: "bg-pink-500" },
+  { value: "non-binary", label: "Non-binary", icon: IoMdTransgender, color: "bg-violet-500" }
+];
+
+const ageGroups = ["Child", "Teen", "Young Adult", "Adult", "Elderly"];
+const personalityTraits = [
+  "Energetic", "Quirky", "Calm", "Playful", "Serious", "Mysterious",
+  "Wise", "Shy", "Brave", "Confident", "Funny", "Heroic"
+];
+
+const voiceToneOptions = [
+  { value: "Cheerful", icon: Smile },
+  { value: "Serious", icon: Frown },
+  { value: "Mysterious", icon: Sparkles },
+  { value: "Energetic", icon: Zap },
+  { value: "Calm", icon: Wind },
+  { value: "Dramatic", icon: Drama }
+];
+
+const voiceAccents = ["Neutral", "American", "British", "Australian"];
+
+const hairColors = ["Black", "Brown", "Blonde", "Red", "Gray", "White", "Blue", "Pink", "Purple"];
+const hairStyles = ["Long", "Short", "Curly", "Spiky", "Wavy", "Bald", "Ponytail", "Braided"];
+const eyeColors = ["Brown", "Blue", "Green", "Gray", "Hazel", "Amber", "Violet"];
+const outfitStyles = ["Casual", "Formal", "Athletic", "Fantasy", "Futuristic", "Vintage", "Urban"];
+
+export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
+  const [step, setStep] = useState(1);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [characterData, setCharacterData] = useState<CharacterData>({
+    name: "",
+    artStyle: "",
+    gender: "",
+    ageGroup: "",
+    personality: [],
+    voiceTone: "",
+    voiceAccent: "",
+    hairColor: "",
+    hairStyle: "",
+    eyeColor: "",
+    outfitStyle: "",
+    backstory: ""
+  });
+
+  const updateData = (field: keyof CharacterData, value: any) => {
+    setCharacterData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const togglePersonality = (trait: string) => {
+    setCharacterData(prev => {
+      const current = prev.personality;
+      if (current.includes(trait)) {
+        return { ...prev, personality: current.filter(t => t !== trait) };
+      } else if (current.length < 5) {
+        return { ...prev, personality: [...current, trait] };
+      }
+      return prev;
+    });
+  };
+
+  const randomizeAppearance = () => {
+    updateData("hairColor", hairColors[Math.floor(Math.random() * hairColors.length)]);
+    updateData("hairStyle", hairStyles[Math.floor(Math.random() * hairStyles.length)]);
+    updateData("eyeColor", eyeColors[Math.floor(Math.random() * eyeColors.length)]);
+    updateData("outfitStyle", outfitStyles[Math.floor(Math.random() * outfitStyles.length)]);
+    toast.success("Appearance randomized!");
+  };
+
+  const handleGenerate = async (saveAsTemplate = false) => {
+    setIsGenerating(true);
+    // Simulate AI generation with animation
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    setIsGenerating(false);
+    onCharacterCreated(characterData);
+    toast.success(saveAsTemplate ? "Character saved as template!" : "Character created successfully!");
+    // Reset form
+    setCharacterData({
+      name: "",
+      artStyle: "",
+      gender: "",
+      ageGroup: "",
+      personality: [],
+      voiceTone: "",
+      voiceAccent: "",
+      hairColor: "",
+      hairStyle: "",
+      eyeColor: "",
+      outfitStyle: "",
+      backstory: ""
+    });
+    setStep(1);
+  };
+
+  const canProceed = () => {
+    if (step === 1) {
+      return characterData.name && characterData.artStyle && characterData.gender && characterData.ageGroup;
+    }
+    if (step === 2) {
+      return characterData.personality.length > 0 && characterData.voiceTone && characterData.voiceAccent;
+    }
+    return true;
+  };
+
+  const progress = (step / 3) * 100;
+
+  return (
+    <>
+      <GeneratingAnimation open={isGenerating} characterName={characterData.name || "Your Character"} />
+
+      <div className="w-full p-8">
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-muted-foreground">Step {step} of 3</span>
+            <span className="text-muted-foreground">{Math.round(progress)}%</span>
+          </div>
+          <Progress value={progress} className="h-2" />
+        </div>
+
+        <AnimatePresence mode="wait">
+          {step === 1 && (
+            <motion.div
+              key="step1"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-6"
+            >
+              <h2 className="font-crimson-pro text-2xl font-bold mb-6">Character Details</h2>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  Character Name
+                </Label>
+                <Input
+                  value={characterData.name}
+                  onChange={(e) => updateData("name", e.target.value)}
+                  placeholder="Enter character name"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <Palette className="w-4 h-4" />
+                  Art Style
+                </Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {artStyles.map(style => (
+                    <button
+                      key={style.name}
+                      type="button"
+                      onClick={() => updateData("artStyle", style.name)}
+                      className={`relative aspect-video rounded-lg border-2 overflow-hidden transition-all ${characterData.artStyle === style.name
+                          ? "border-white ring-2 ring-white/20"
+                          : "border-border hover:border-primary/50"
+                        }`}
+                    >
+                      <div
+                        className="w-full h-full bg-cover bg-center"
+                        style={{ backgroundImage: `url(${style.image})` }}
+                      />
+                      <div className={`absolute inset-0 ${characterData.artStyle === style.name ? 'bg-black/20' : 'bg-black/40'} flex items-center justify-center`}>
+                        <span className={`font-medium ${characterData.artStyle === style.name ? "text-white" : "text-white"
+                          }`}>
+                          {style.name}
+                        </span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <IoMdMale className="w-4 h-4" />
+                  Gender
+                </Label>
+                <div className="grid grid-cols-3 gap-3">
+                  {genders.map(gender => {
+                    const IconComponent = gender.icon;
+                    return (
+                      <button
+                        key={gender.value}
+                        type="button"
+                        onClick={() => updateData("gender", gender.value)}
+                        className={`p-4 rounded-lg border-2 transition-all flex flex-col items-center gap-2 ${characterData.gender === gender.value
+                            ? "border-white " + gender.color
+                            : "border-border hover:border-primary/50"
+                          }`}
+                      >
+                        <IconComponent className={`w-6 h-6 ${characterData.gender === gender.value ? "text-white" : "text-muted-foreground"
+                          }`} />
+                        <span className={characterData.gender === gender.value ? "text-white" : "text-foreground"}>
+                          {gender.label}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  Age Group
+                </Label>
+                <Select value={characterData.ageGroup} onValueChange={(val) => updateData("ageGroup", val)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select age group" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ageGroups.map(age => (
+                      <SelectItem key={age} value={age}>{age}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </motion.div>
+          )}
+
+          {step === 2 && (
+            <motion.div
+              key="step2"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-6"
+            >
+              <h2 className="font-crimson-pro text-2xl font-bold mb-6">Personality & Voice</h2>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  Personality Traits (Select up to 5) - {characterData.personality.length}/5
+                </Label>
+                <div className="flex flex-wrap gap-2">
+                  {personalityTraits.map(trait => (
+                    <Badge
+                      key={trait}
+                      onClick={() => togglePersonality(trait)}
+                      variant={characterData.personality.includes(trait) ? "default" : "secondary"}
+                      className={`cursor-pointer ${!characterData.personality.includes(trait) && characterData.personality.length >= 5
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                        }`}
+                    >
+                      {trait}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <Volume2 className="w-4 h-4" />
+                  Voice Tone
+                </Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {voiceToneOptions.map(({ value, icon: Icon }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => updateData("voiceTone", value)}
+                      className={`p-4 rounded-lg border-2 transition-all flex items-center gap-3 ${characterData.voiceTone === value
+                          ? "border-primary bg-primary/10"
+                          : "border-border hover:border-primary/50"
+                        }`}
+                    >
+                      <Icon className={`w-5 h-5 ${characterData.voiceTone === value ? "text-primary" : "text-muted-foreground"
+                        }`} />
+                      <span className={characterData.voiceTone === value ? "text-primary" : "text-foreground"}>
+                        {value}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <Volume2 className="w-4 h-4" />
+                  Voice Accent
+                </Label>
+                <Select value={characterData.voiceAccent} onValueChange={(val) => updateData("voiceAccent", val)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select accent" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {voiceAccents.map(accent => (
+                      <SelectItem key={accent} value={accent}>{accent}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </motion.div>
+          )}
+
+          {step === 3 && (
+            <motion.div
+              key="step3"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-6"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="font-crimson-pro text-2xl font-bold">Appearance & Backstory</h2>
+                <Button
+                  onClick={randomizeAppearance}
+                  variant="outline"
+                  className="rounded-lg"
+                >
+                  <Shuffle className="w-4 h-4 mr-2" />
+                  Randomize
+                </Button>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <IoIosColorPalette className="w-4 h-4" />
+                    Hair Color
+                  </Label>
+                  <Input
+                    value={characterData.hairColor}
+                    onChange={(e) => updateData("hairColor", e.target.value)}
+                    placeholder="e.g., Black, Red"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Stars className="w-4 h-4" />
+                    Hair Style
+                  </Label>
+                  <Input
+                    value={characterData.hairStyle}
+                    onChange={(e) => updateData("hairStyle", e.target.value)}
+                    placeholder="e.g., Spiky, Long"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Eye className="w-4 h-4" />
+                    Eye Color
+                  </Label>
+                  <Input
+                    value={characterData.eyeColor}
+                    onChange={(e) => updateData("eyeColor", e.target.value)}
+                    placeholder="e.g., Blue, Green"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Shirt className="w-4 h-4" />
+                    Outfit Style
+                  </Label>
+                  <Input
+                    value={characterData.outfitStyle}
+                    onChange={(e) => updateData("outfitStyle", e.target.value)}
+                    placeholder="e.g., Casual, Formal"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4" />
+                  Backstory (Optional)
+                </Label>
+                <Textarea
+                  value={characterData.backstory}
+                  onChange={(e) => updateData("backstory", e.target.value)}
+                  className="rounded-lg min-h-32"
+                  placeholder="Tell us about your character's story..."
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="flex justify-between mt-8">
+          {step > 1 ? (
+            <Button
+              onClick={() => setStep(step - 1)}
+              variant="outline"
+              className="rounded-lg"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Previous
+            </Button>
+          ) : (
+            <div />
+          )}
+
+          {step < 3 ? (
+            <Button
+              onClick={() => setStep(step + 1)}
+              disabled={!canProceed()}
+              className="rounded-lg"
+            >
+              Next
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          ) : (
+            <div className="flex gap-3">
+              <Button
+                onClick={() => handleGenerate(true)}
+                disabled={isGenerating}
+                variant="outline"
+                className="rounded-lg"
+              >
+                <Check className="w-4 h-4 mr-2" />
+                Save as Template
+              </Button>
+              <Button
+                onClick={() => handleGenerate(false)}
+                disabled={isGenerating}
+                className="rounded-lg"
+              >
+                <Check className="w-4 h-4 mr-2" />
+                Generate Character
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}

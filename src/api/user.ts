@@ -18,7 +18,7 @@ export const userApi = baseApi.injectEndpoints({
 
     // useFilterUsersQuery
     filterUsers: builder.query<
-      operations['UserController_filterUsers']['responses']['200'],
+      operations['UserController_filterUsers']['responses']['200']['content'],
       operations['UserController_filterUsers']['parameters']['query']
     >({
       query: (params) => ({

@@ -24,7 +24,7 @@ export function AdminUsersIndex() {
     try {
       const response = await deleteUser({
         id: user._id,
-      }).unwrap();
+      }).unwrap() as any;
 
       toast(response.message || "User deleted successfully", {
         description: "User has been deleted successfully",
@@ -69,10 +69,10 @@ export function AdminUsersIndex() {
     <>
       <DataTable
         columns={columns}
-        data={data?.body?.data || []}
+        data={(data as any).body!.data || []}
         page={page}
         setPage={setPage}
-        totalPages={data?.body?.totalPages || 1}
+        totalPages={(data as any).body!.totalPages || 1}
         limit={limit}
         setLimit={setLimit}
         isPagination={true}

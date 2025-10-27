@@ -1,4 +1,7 @@
 import { MainLayout } from "@/components/common/main.layout";
+import { AdminLayout } from "@/pages/admin/admin.layout";
+import { AdminLoginIndex } from "@/pages/admin/login/admin-login.index";
+import { AdminUsersIndex } from "@/pages/admin/users-management/admin-users.index";
 import { CharactersLayout } from "@/pages/characters/character.layout";
 import { CreateCharacterIndex } from "@/pages/characters/create/character-create.index";
 import { Navigate, Route, Routes } from "react-router";
@@ -20,6 +23,15 @@ export function AppRoutes() {
                 <Route path="library" element={<div>Hello</div>} />
                 <Route path="community" element={<div>Hello</div>} />
                 <Route path="profile" element={<div>Hello</div>} />
+            </Route>
+
+
+            <Route path="/admin/login" element={<AdminLoginIndex />} />
+
+            <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<Navigate to="/admin/dashboard" />} />
+                <Route path="users-management" element={<AdminUsersIndex />} />
+                <Route path="*" element={<Navigate to="/admin/dashboard" />} />
             </Route>
         </Routes>
     )

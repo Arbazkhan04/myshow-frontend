@@ -9,7 +9,7 @@ export const userApi = baseApi.injectEndpoints({
       operations['UserController_getAllUsers']['parameters']['query']
     >({
       query: (params) => ({
-        url: '/api/v1/users',
+        url: '/users',
         method: 'GET',
         params,
       }),
@@ -22,7 +22,7 @@ export const userApi = baseApi.injectEndpoints({
       operations['UserController_filterUsers']['parameters']['query']
     >({
       query: (params) => ({
-        url: '/api/v1/users/filter',
+        url: '/users/filter',
         method: 'GET',
         params,
       }),
@@ -35,7 +35,7 @@ export const userApi = baseApi.injectEndpoints({
       operations['UserController_getUserById']['parameters']['path']
     >({
       query: (params) => ({
-        url: `/api/v1/users/${params.id}`,
+        url: `/users/${params.id}`,
         method: 'GET',
       }),
       providesTags: (result, error, params) => [{ type: 'User', id: params.id }],
@@ -50,7 +50,7 @@ export const userApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ path, body }) => ({
-        url: `/api/v1/users/${path.id}`,
+        url: `/users/${path.id}`,
         method: 'PUT',
         body,
       }),
@@ -66,7 +66,7 @@ export const userApi = baseApi.injectEndpoints({
       operations['UserController_deleteUser']['parameters']['path']
     >({
       query: (params) => ({
-        url: `/api/v1/users/${params.id}`,
+        url: `/users/${params.id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['User'],

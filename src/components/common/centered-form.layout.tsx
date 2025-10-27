@@ -11,8 +11,8 @@ export function CenteredFormLayout({ children, className = "" }: CenteredFormLay
       
       {/* Gradient Circles */}
       <div className="absolute -top-1/4 -right-1/4 w-1/2 h-1/2 bg-primary/20 rounded-full blur-3xl opacity-30 animate-pulse" />
-      <div className="absolute -bottom-1/4 -left-1/4 w-1/2 h-1/2 bg-secondary/20 rounded-full blur-3xl opacity-30 animate-pulse delay-1000" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/3 h-1/3 bg-accent/10 rounded-full blur-3xl opacity-20 animate-pulse delay-500" />
+      <div className="absolute -bottom-1/4 -left-1/4 w-1/2 h-1/2 bg-tertiary/20 rounded-full blur-3xl opacity-30 animate-pulse delay-1000" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/3 h-1/3 bg-tertiary/10 rounded-full blur-3xl opacity-20 animate-pulse delay-500" />
       
       {/* Content Container */}
       <div className="relative z-10 w-full max-w-md">

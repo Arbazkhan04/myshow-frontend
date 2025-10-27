@@ -60,7 +60,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       // Handle API error - use backend message if available
       const errorData = error.data;
       if (errorData?.message) {
-        toast(errorData.message.title || 'Login Failed', {
+        toast(errorData.message || 'Login Failed', {
           description: errorData.message.description || 'Please try again',
         });
       } else {

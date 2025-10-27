@@ -9,7 +9,7 @@ export const characterApi = baseApi.injectEndpoints({
       operations['CharacterController_getCharacterById']['parameters']['path']
     >({
       query: (params) => ({
-        url: `/api/v1/character/characterById/${params.id}`,
+        url: `/character/characterById/${params.id}`,
         method: 'GET',
       }),
       providesTags: (result, error, params) => [{ type: 'Character', id: params.id }],
@@ -21,7 +21,7 @@ export const characterApi = baseApi.injectEndpoints({
       operations['CharacterController_getCharactersByUser']['parameters']['query']
     >({
       query: (params) => ({
-        url: '/api/v1/character/getUserCharacters',
+        url: '/character/getUserCharacters',
         method: 'GET',
         params,
       }),
@@ -34,7 +34,7 @@ export const characterApi = baseApi.injectEndpoints({
       operations['CharacterController_deleteCharacter']['parameters']['path']
     >({
       query: (params) => ({
-        url: `/api/v1/character/delete/${params.id}`,
+        url: `/character/delete/${params.id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Character'],
@@ -46,7 +46,7 @@ export const characterApi = baseApi.injectEndpoints({
       operations['CharacterWorkflowController_createCharacter']['requestBody']['content']['application/json']
     >({
       query: (body) => ({
-        url: '/api/v1/character-workflow',
+        url: '/character-workflow',
         method: 'POST',
         body,
       }),

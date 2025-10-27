@@ -3,6 +3,7 @@ import { Plus, Users, Library, Users2, User } from 'lucide-react';
 import { FaTheaterMasks } from "react-icons/fa";
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
+import { ProfileShortcut } from '../app/ProfileShortcut';
 
 export const MainLayout = () => {
   const location = useLocation();
@@ -24,9 +25,12 @@ export const MainLayout = () => {
       {/* Main content (full height minus nav on small screens) */}
       <main className="relative flex-1 overflow-y-auto pb-20 sm:pb-28">
         <Outlet />
-        <Button variant="ghost" className='absolute top-6 left-6 rounded-full' onClick={() => navigate("/")}>
+        <Button variant="ghost" className='absolute top-12 left-6 rounded-full' onClick={() => navigate("/")}>
           <img src="/logo.png" alt="myshow.ai logo" className='w-12 h-12 object-contain' />
         </Button>
+        <div className='absolute top-10 right-6 rounded-full'>
+          <ProfileShortcut />
+        </div>
       </main>
 
       {/* Bottom Navigation Bar */}

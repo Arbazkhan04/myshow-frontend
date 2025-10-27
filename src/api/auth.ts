@@ -9,7 +9,7 @@ export const authApi = baseApi.injectEndpoints({
       operations['AuthController_register']['requestBody']['content']['application/json']
     >({
       query: (body) => ({
-        url: '/api/v1/auth/register',
+        url: '/auth/register',
         method: 'POST',
         body,
       }),
@@ -21,7 +21,7 @@ export const authApi = baseApi.injectEndpoints({
       operations['AuthController_login']['requestBody']['content']['application/json']
     >({
       query: (body) => ({
-        url: '/api/v1/auth/login',
+        url: '/auth/login',
         method: 'POST',
         body,
       }),

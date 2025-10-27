@@ -9,7 +9,7 @@ export const audioApi = baseApi.injectEndpoints({
       operations['AudioModelController_filterVoices']['parameters']['query']
     >({
       query: (params) => ({
-        url: '/api/v1/audio-model/filter',
+        url: '/audio-model/filter',
         method: 'GET',
         params,
       }),

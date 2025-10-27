@@ -1,4 +1,5 @@
 import { CreateCharacter } from "@/components/app/CreateCharacter";
+import { DemoForm } from "./dummy";
 
 export function CreateCharacterIndex() {
   return (
@@ -16,6 +17,8 @@ export function CreateCharacterIndex() {
           full control to design the stars of your stories effortlessly.
         </p>
       </section>
+
+      <DemoForm />
 
       {/* Banner */}
       <div className="w-full mt-10 relative">

@@ -4,6 +4,7 @@ import { AdminLoginIndex } from "@/pages/admin/login/admin-login.index";
 import { AdminUsersIndex } from "@/pages/admin/users-management/admin-users.index";
 import { CharactersLayout } from "@/pages/characters/character.layout";
 import { CreateCharacterIndex } from "@/pages/characters/create/character-create.index";
+import { MyCharactersIndex } from "@/pages/characters/my-characters/my-characters.index";
 import { Navigate, Route, Routes } from "react-router";
 
 export function AppRoutes() {
@@ -16,7 +17,7 @@ export function AppRoutes() {
                 <Route path="characters" element={<CharactersLayout />}>
                     <Route index element={<Navigate to="/characters/create" />} />
                     <Route path="create" element={<CreateCharacterIndex />} />
-                    <Route path="my-characters" element={<div>My character</div>} />
+                    <Route path="my-characters" element={<MyCharactersIndex />} />
                     <Route path="templates" element={<div>Templates</div>} />
                     <Route path="*" element={<Navigate to="/characters/create" />} />
                 </Route>
@@ -24,7 +25,6 @@ export function AppRoutes() {
                 <Route path="community" element={<div>Hello</div>} />
                 <Route path="profile" element={<div>Hello</div>} />
             </Route>
-
 
             <Route path="/admin/login" element={<AdminLoginIndex />} />
 

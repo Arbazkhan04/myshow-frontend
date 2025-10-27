@@ -45,7 +45,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
       if (response.success) {
         // Dispatch to auth slice to set token in cookie and update state
-        dispatch(login({ token: response.body.token }));
+        dispatch(login({ token: response.body.accessToken }));
         
         // Show success toast with backend message
         toast(response.message);

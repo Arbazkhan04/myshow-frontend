@@ -42,8 +42,8 @@ export function ProfileShortcut() {
           </Button>
         </DialogTrigger>
         <DialogContent className="lg:max-w-5xl lg:w-full p-0 overflow-hidden max-h-[90vh]">
-  <AuthForm onSuccess={() => {}} />
-</DialogContent>
+          <AuthForm onSuccess={() => { }} />
+        </DialogContent>
 
       </Dialog>
     )

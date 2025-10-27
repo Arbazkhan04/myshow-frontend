@@ -116,7 +116,7 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full max-w-sm">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
       {/* Full Name */}
       <div className="space-y-2">
         <Label htmlFor="fullName">Full Name</Label>

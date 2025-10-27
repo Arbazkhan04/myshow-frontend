@@ -72,7 +72,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full max-w-sm">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
       {/* Email Field */}
       <div className="space-y-2">
         <Label htmlFor="email" className="text-sm font-medium">

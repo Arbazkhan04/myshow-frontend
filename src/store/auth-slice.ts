@@ -22,9 +22,9 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login(state, action: PayloadAction<{ token: string, user: User}>) {
+    login(state, action: PayloadAction<{ token: string; }>) {
       document.cookie = `token=${action.payload.token}; path=/; secure; samesite=strict`;
-      state.user = action.payload.user;
+      state.user = decodeJwtPayload(token);
     },
     logout(state) {
       document.cookie = `token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;

@@ -1,27 +1,17 @@
-// components/register-form.tsx
-"use client";
-
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
 import { useRegisterMutation } from "@/api/auth";
-import { cn } from "@/lib/utils";
 import { useDispatch } from "react-redux";
 import { login } from "@/store/auth-slice";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-// ✅ Zod Schema
+import { EmailField, FullNameField } from "../fields/text.field";
+import { PasswordField } from "../fields/password.field";
+import { PasswordStrength } from "../common/password-strength";
+import { submitHandler } from "@/lib/submit-handler";
+import { GenderField } from "../fields/select.field";
+import { useEffect, useState } from "react";
+
 const registerSchema = z
   .object({
     fullName: z.string().min(2, "Full name is required"),
@@ -42,231 +32,62 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 interface RegisterFormProps {
   onSuccess?: () => void;
 }
-
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [debouncedPassword, setDebouncedPassword] = useState("");
   const [registerMutation, { isLoading }] = useRegisterMutation();
   const dispatch = useDispatch();
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<RegisterFormData>({
+  const methods = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
+  const { handleSubmit, watch } = methods;
 
-  const passwordValue = watch("password", "");
+  const rawPassword = watch("password", "");
 
-  // ✅ Password Strength Logic
-  const getPasswordStrength = (password: string) => {
-    let strength = 0;
-    if (password.length >= 8) strength += 25;
-    if (/[A-Z]/.test(password)) strength += 25;
-    if (/[0-9]/.test(password)) strength += 25;
-    if (/[^A-Za-z0-9]/.test(password)) strength += 25;
-
-    if (strength === 0)
-      return { strength: 0, label: "Weak", color: "bg-gray-300" };
-    if (strength <= 50)
-      return { strength, label: "Fair", color: "bg-orange-400" };
-    if (strength <= 75)
-      return { strength, label: "Good", color: "bg-blue-500" };
-    return { strength, label: "Strong", color: "bg-green-500" };
-  };
-
-  const passwordStrength = getPasswordStrength(passwordValue);
-
+  // debounce password updates
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedPassword(rawPassword);
+    }, 300); // 300ms delay
+    return () => clearTimeout(handler);
+  }, [rawPassword]);
+   
   const onSubmit = async (data: RegisterFormData) => {
-    try {
-      const response = (await registerMutation({
+    submitHandler({
+      data: {
         fullName: data.fullName,
         email: data.email,
         password: data.password,
         gender: data.gender,
         role: "user",
-      }).unwrap()) as any;
-
-      if (response.success) {
-        const token = response.body.accessToken;
+      },
+      mutate: registerMutation,
+      onSuccess: (res) => {
+        const token = res.body.accessToken as string;
         dispatch(login({ token }));
-        toast(response.message || "Registration successful!");
-        onSuccess?.();
-      } else {
-        toast(response.message, {
-          description: "Unexpected response from server",
-        });
-      }
-    } catch (error: any) {
-      const errorData = error.data;
-      if (errorData?.message) {
-        
-        toast(errorData.message || "Registration failed", {
-          description: errorData.message.description || "Please try again",
-        });
-      } else {
-        toast("Registration failed", {
-          description: "An unexpected error occurred",
-        });
-      }
-    }
+        // onSuccess?.();
+      },
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
-      {/* Full Name */}
-      <div className="space-y-2">
-        <Label htmlFor="fullName">Full Name</Label>
-        <div className="relative">
-          <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input
-            id="fullName"
-            placeholder="Enter your full name"
-            className="pl-10 h-11"
-            {...register("fullName")}
-          />
-        </div>
-        {errors.fullName && (
-          <p className="text-sm text-destructive">{errors.fullName.message}</p>
-        )}
-      </div>
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
+        <FullNameField />
+        <EmailField />
+        <PasswordField />
+        {debouncedPassword && <PasswordStrength password={debouncedPassword} />}
+        <PasswordField
+          label="Confirm Password"
+          name="confirmPassword"
+          placeholder="Re-enter password"
+        />
+        <GenderField />
 
-      {/* Email */}
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <div className="relative">
-          <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input
-            id="email"
-            type="email"
-            placeholder="Enter your email"
-            className="pl-10 h-11"
-            {...register("email")}
-          />
-        </div>
-        {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
-        )}
-      </div>
-
-      {/* Password */}
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
-        <div className="relative">
-          <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input
-            id="password"
-            type={showPassword ? "text" : "password"}
-            placeholder="Enter password"
-            className="pl-10 pr-10 h-11"
-            {...register("password")}
-          />
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? (
-              <EyeOff className="h-4 w-4 text-muted-foreground" />
-            ) : (
-              <Eye className="h-4 w-4 text-muted-foreground" />
-            )}
-          </Button>
-        </div>
-        {errors.password && (
-          <p className="text-sm text-destructive">{errors.password.message}</p>
-        )}
-
-        {/* Password Strength Meter */}
-        {passwordValue && (
-          <div className="space-y-1 mt-3">
-            <div className="w-full bg-muted rounded-full h-2">
-              <div
-                className={cn(
-                  "h-2 rounded-full transition-all",
-                  passwordStrength.color
-                )}
-                style={{ width: `${passwordStrength.strength}%` }}
-              />
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Strength:{" "}
-              <span className="font-medium">{passwordStrength.label}</span>
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Confirm Password */}
-      <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirm Password</Label>
-        <div className="relative">
-          <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input
-            id="confirmPassword"
-            type={showConfirmPassword ? "text" : "password"}
-            placeholder="Re-enter password"
-            className="pl-10 pr-10 h-11"
-            {...register("confirmPassword")}
-          />
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          >
-            {showConfirmPassword ? (
-              <EyeOff className="h-4 w-4 text-muted-foreground" />
-            ) : (
-              <Eye className="h-4 w-4 text-muted-foreground" />
-            )}
-          </Button>
-        </div>
-        {errors.confirmPassword && (
-          <p className="text-sm text-destructive">
-            {errors.confirmPassword.message}
-          </p>
-        )}
-      </div>
-
-      {/* ✅ Gender (shadcn Select) */}
-      <div className="space-y-2">
-        <Label htmlFor="gender">Gender</Label>
-        <Select
-          onValueChange={(value) => setValue("gender", value as any)}
-          defaultValue={watch("gender")}
-        >
-          <SelectTrigger id="gender" className="h-11">
-            <SelectValue placeholder="Select your gender" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="male">Male</SelectItem>
-            <SelectItem value="female">Female</SelectItem>
-            <SelectItem value="other">Other</SelectItem>
-          </SelectContent>
-        </Select>
-        {errors.gender && (
-          <p className="text-sm text-destructive">{errors.gender.message}</p>
-        )}
-      </div>
-
-      {/* Submit */}
-      <Button type="submit" className="w-full h-11" disabled={isLoading}>
-        {isLoading ? (
-          <div className="flex items-center gap-2">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-            Creating account...
-          </div>
-        ) : (
-          "Register"
-        )}
-      </Button>
-    </form>
+        <Button type="submit" className="w-full" isLoading={isLoading}>
+          {isLoading ? "Creating account..." : "Register"}
+        </Button>
+      </form>
+    </FormProvider>
   );
 }

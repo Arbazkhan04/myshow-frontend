@@ -11,16 +11,13 @@ export function removeTokenCookie(cookieName = 'token') {
 
 
 // Decodes a JWT and returns its payload (no verification)
-export function decodeJwtPayload(token?: string): { id: string; role: 'admin' | 'user' } | null {
+export function decodeJwtPayload(token?: string): { _id: string; email: string; role: 'admin' | 'user' } | null {
   if (!token) return null;
   try {
     const payload = token.split('.')[1];
     if (!payload) return null;
     const decoded = JSON.parse(atob(payload));
-    if (typeof decoded.id === 'string' && (decoded.role === 'admin' || decoded.role === 'user')) {
-      return { id: decoded.id, role: decoded.role };
-    }
-    return null;
+    return { _id: decoded.sub, role: decoded.role, email: decoded.email };
   } catch {
     return null;
   }

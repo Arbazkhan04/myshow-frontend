@@ -5,11 +5,8 @@ import { AppRoutes } from './routes/app-routes'
 import { Toaster } from './components/ui/sonner'
 import { IS_DEVELOPMENT_MODE } from './config'
 import { ThemeToggle } from './components/common/theme-toggle.button'
-import { Button } from './components/ui/button'
-import { useNavigate } from 'react-router'
 
 export function App() {
-  const navigate = useNavigate();
   return (
     <Provider store={store}>
       <ThemeProvider defaultTheme="light" storageKey="myshowai-theme">

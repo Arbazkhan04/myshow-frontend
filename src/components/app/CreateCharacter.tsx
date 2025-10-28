@@ -14,6 +14,10 @@ import { toast } from "sonner";
 import { IoMdFemale, IoMdMale, IoMdTransgender } from "react-icons/io";
 import { IoIosColorPalette } from "react-icons/io";
 import { VoiceSelector } from "@/pages/characters/create/character-voices-preview";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store/store";
+import { useCreateCharacterMutation } from "@/api/character";
+import { useNavigate } from "react-router";
 
 interface CharacterData {
   name: string;
@@ -31,12 +35,11 @@ interface CharacterData {
   skinTone: string;
   accessories: string[];
   selectedVoiceId: string;
-  createCustomVoice: boolean;
+  createcustomvoice: boolean;
 }
 
 interface CreateCharacterProps {
   onCharacterCreated: (character: any) => void;
-  createdBy: string;
 }
 
 const artStyles = [
@@ -54,22 +57,35 @@ const genders = [
   { value: "non-binary", label: "Non-binary", icon: IoMdTransgender, color: "bg-violet-500" }
 ];
 
-const ageGroups = ["Child", "Teen", "Young Adult", "Adult", "Elderly"];
+const ageGroups = [
+  { label: "Child", value: "child" },
+  { label: "Teen", value: "teen" },
+  { label: "Young Adult", value: "youngAdult" },
+  { label: "Adult", value: "adult" },
+  { label: "Elderly", value: "elderly" },
+];
+
 const personalityTraits = [
   "Energetic", "Quirky", "Calm", "Playful", "Serious", "Mysterious",
   "Wise", "Shy", "Brave", "Confident", "Funny", "Heroic"
 ];
 
 const voiceToneOptions = [
-  { value: "Cheerful", icon: Smile },
-  { value: "Serious", icon: Frown },
-  { value: "Mysterious", icon: Sparkles },
-  { value: "Energetic", icon: Zap },
-  { value: "Calm", icon: Wind },
-  { value: "Dramatic", icon: Drama }
+  { value: "cheerful", label: "Cheerful", icon: Smile },
+  { value: "serious", label: "Serious", icon: Frown },
+  { value: "mysterious", label: "Mysterious", icon: Sparkles },
+  { value: "energetic", label: "Energetic", icon: Zap },
+  { value: "calm", label: "Calm", icon: Wind },
+  { value: "dramatic", label: "Dramatic", icon: Drama }
 ];
 
-const voiceAccents = ["Neutral", "American", "British", "Australian"];
+const voiceAccentOptions = [
+  { value: "neutral", label: "Neutral" },
+  { value: "american", label: "American" },
+  { value: "british", label: "British" },
+  { value: "australian", label: "Australian" }
+];
+
 const skinTones = ["Fair", "Light", "Medium", "Olive", "Tan", "Brown", "Dark"];
 const hairColors = ["Black", "Brown", "Blonde", "Red", "Gray", "White", "Blue", "Pink", "Purple"];
 const hairStyles = ["Long", "Short", "Curly", "Spiky", "Wavy", "Bald", "Ponytail", "Braided"];
@@ -77,9 +93,13 @@ const eyeColors = ["Brown", "Blue", "Green", "Gray", "Hazel", "Amber", "Violet"]
 const outfitStyles = ["Casual", "Formal", "Athletic", "Fantasy", "Futuristic", "Vintage", "Urban"];
 const accessoryOptions = ["Glasses", "Hat", "Jewelry", "Scarf", "Watch", "Tattoos", "Piercings", "Mask"];
 
-export function CreateCharacter({ onCharacterCreated, createdBy }: CreateCharacterProps) {
+export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
+  const user = useSelector((state: RootState) => state.auth.user);
+  const createdBy = user ? user._id : "dummy";
   const [step, setStep] = useState(1);
+  const [createCharacter] = useCreateCharacterMutation();
   const [isGenerating, setIsGenerating] = useState(false);
+  const navigate = useNavigate();
   const [characterData, setCharacterData] = useState<CharacterData>({
     name: "",
     artStyle: "",
@@ -96,7 +116,7 @@ export function CreateCharacter({ onCharacterCreated, createdBy }: CreateCharact
     skinTone: "",
     accessories: [],
     selectedVoiceId: "",
-    createCustomVoice: true // Default to custom voice tab
+    createcustomvoice: true // Default to custom voice tab
   });
 
   const updateData = (field: keyof CharacterData, value: any) => {
@@ -140,7 +160,7 @@ export function CreateCharacter({ onCharacterCreated, createdBy }: CreateCharact
       name: characterData.name,
       art_style: characterData.artStyle.toLowerCase(),
       gender: characterData.gender,
-      age_group: characterData.ageGroup.toLowerCase().replace(" ", "_"),
+      age_group: characterData.ageGroup,
       personality_traits: characterData.personality,
       appearance: {
         hair_color: characterData.hairColor,
@@ -153,12 +173,13 @@ export function CreateCharacter({ onCharacterCreated, createdBy }: CreateCharact
       backstory: characterData.backstory,
       created_by: createdBy,
       is_sample: false,
+      is_premium: false,
       is_template: saveAsTemplate,
-      createCustomVoice: characterData.createCustomVoice
+      createcustomvoice: characterData.createcustomvoice
     };
 
     // Add voice data conditionally
-    if (characterData.createCustomVoice) {
+    if (characterData.createcustomvoice) {
       formattedData.voice_tone = characterData.voiceTone;
       formattedData.voice_accent = characterData.voiceAccent;
     } else {
@@ -175,16 +196,14 @@ export function CreateCharacter({ onCharacterCreated, createdBy }: CreateCharact
     const formattedData = formatCharacterData(saveAsTemplate);
     
     // Log the formatted data to console
-    console.log("Character Data:", formattedData);
-    
-    // Simulate AI generation with animation
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    setIsGenerating(false);
-    onCharacterCreated(formattedData);
-    toast.success(saveAsTemplate ? "Character saved as template!" : "Character created successfully!");
-    
-    // Reset form
-    setCharacterData({
+    console.log(formattedData);
+    const response = await createCharacter(formattedData);
+    const rd = response.data as any;
+    if (rd.success) {
+      setIsGenerating(false);
+      onCharacterCreated(formattedData);
+      toast.success(rd.message || "Character saved successfully!");
+      setCharacterData({
       name: "",
       artStyle: "",
       gender: "",
@@ -200,9 +219,14 @@ export function CreateCharacter({ onCharacterCreated, createdBy }: CreateCharact
       skinTone: "",
       accessories: [],
       selectedVoiceId: "",
-      createCustomVoice: true
+      createcustomvoice: true
     });
     setStep(1);
+    navigate("/characters/my-characters");
+    } else {
+      setIsGenerating(false);
+      toast.error(rd.message || "Failed to generate character");
+    }
   };
 
   const canProceed = () => {
@@ -212,7 +236,7 @@ export function CreateCharacter({ onCharacterCreated, createdBy }: CreateCharact
     if (step === 2) {
       if (characterData.personality.length === 0) return false;
       
-      if (characterData.createCustomVoice) {
+      if (characterData.createcustomvoice) {
         // Custom voice tab - require voice tone and accent
         return characterData.voiceTone && characterData.voiceAccent;
       } else {
@@ -338,7 +362,7 @@ export function CreateCharacter({ onCharacterCreated, createdBy }: CreateCharact
                   </SelectTrigger>
                   <SelectContent>
                     {ageGroups.map(age => (
-                      <SelectItem key={age} value={age}>{age}</SelectItem>
+                      <SelectItem key={age.value} value={age.value}>{age.label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -380,8 +404,8 @@ export function CreateCharacter({ onCharacterCreated, createdBy }: CreateCharact
               </div>
 
               <Tabs 
-                value={characterData.createCustomVoice ? "custom" : "select"} 
-                onValueChange={(value) => updateData("createCustomVoice", value === "custom")}
+                value={characterData.createcustomvoice ? "custom" : "select"} 
+                onValueChange={(value) => updateData("createcustomvoice", value === "custom")}
                 className="w-full"
               >
                 <TabsList className="grid w-full grid-cols-2">
@@ -396,7 +420,7 @@ export function CreateCharacter({ onCharacterCreated, createdBy }: CreateCharact
                       Voice Tone
                     </Label>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {voiceToneOptions.map(({ value, icon: Icon }) => (
+                      {voiceToneOptions.map(({ value, label, icon: Icon }) => (
                         <button
                           key={value}
                           type="button"
@@ -411,7 +435,7 @@ export function CreateCharacter({ onCharacterCreated, createdBy }: CreateCharact
                             characterData.voiceTone === value ? "text-primary" : "text-muted-foreground"
                           }`} />
                           <span className={characterData.voiceTone === value ? "text-primary" : "text-foreground"}>
-                            {value}
+                            {label}
                           </span>
                         </button>
                       ))}
@@ -428,8 +452,8 @@ export function CreateCharacter({ onCharacterCreated, createdBy }: CreateCharact
                         <SelectValue placeholder="Select accent" />
                       </SelectTrigger>
                       <SelectContent>
-                        {voiceAccents.map(accent => (
-                          <SelectItem key={accent} value={accent}>{accent}</SelectItem>
+                        {voiceAccentOptions.map(accent => (
+                          <SelectItem key={accent.value} value={accent.value}>{accent.label}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>

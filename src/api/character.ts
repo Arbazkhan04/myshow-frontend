@@ -42,7 +42,7 @@ export const characterApi = baseApi.injectEndpoints({
 
     // useCreateCharacterMutation
     createCharacter: builder.mutation<
-      operations['CharacterWorkflowController_createCharacter']['responses']['201'],
+      operations['CharacterWorkflowController_createCharacter']['responses']['201']['content'],
       operations['CharacterWorkflowController_createCharacter']['requestBody']['content']['application/json']
     >({
       query: (body) => ({

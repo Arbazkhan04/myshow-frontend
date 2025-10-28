@@ -2,7 +2,8 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { getTokenFromCookie, decodeJwtPayload } from '@/lib/get-token';
 
 type User = {
-  id: string;
+  _id: string;
+  email: string;
   role: 'user' | 'admin';
 };
 

@@ -146,8 +146,8 @@ export function VoiceSelector({ value, onChange }: VoiceSelectorProps) {
                 {paginatedVoices.map((voice) => (
                   <TableRow
                     key={voice._id}
-                    className={`cursor-pointer ${selectedVoice === voice.voice_id ? "bg-primary/30" : "hover:bg-muted/50"}`}
-                    onClick={() => handleVoiceSelect(voice.voice_id)}
+                    className={`cursor-pointer ${selectedVoice === voice._id ? "bg-primary/30" : "hover:bg-muted/50"}`}
+                    onClick={() => handleVoiceSelect(voice._id)}
                   >
                     <TableCell className="font-medium">{voice.name}</TableCell>
                     <TableCell className="min-w-24">

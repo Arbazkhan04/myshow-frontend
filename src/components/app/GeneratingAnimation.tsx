@@ -17,7 +17,7 @@ const steps = [
 export function GeneratingAnimation({ open, characterName }: GeneratingAnimationProps) {
   return (
     <Dialog open={open}>
-      <DialogContent className="glass-panel border-pink-500/30 rounded-3xl max-w-md p-8" hideClose>
+      <DialogContent className="overflow-hidden glass-panel border-pink-500/30 rounded-3xl max-w-md p-8" showCloseButton={false}>
         <div className="text-center space-y-6">
           <div className="relative">
             <motion.div

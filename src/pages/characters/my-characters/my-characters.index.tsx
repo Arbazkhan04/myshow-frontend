@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { useGetCharactersByUserQuery, useDeleteCharacterMutation } from "@/api/character"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
-import { Loader2, Trash2, Volume2 } from "lucide-react"
+import { Loader2, Plus, Trash2, Volume2 } from "lucide-react"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store/store"
 import { useState } from "react"
@@ -23,10 +23,21 @@ import {
 } from "@/components/ui/alert-dialog"
 import { format } from "date-fns"
 import { VoicePreview } from "@/components/common/voice-preview"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
+import { Users } from "lucide-react"
+import { useNavigate } from "react-router"
 
 export function MyCharactersIndex() {
-    const user = useSelector((state: RootState) => state.auth.user)
-    const userId = user?._id || "68ffaa16c3328921ef685186"
+    const user = useSelector((state: RootState) => state.auth.user);
+    const userId = user ? user._id : null;
+    const navigate = useNavigate();
 
     const { data, isLoading } = useGetCharactersByUserQuery({ userId })
     const [deleteCharacter, { isLoading: isDeleting }] = useDeleteCharacterMutation()
@@ -42,12 +53,27 @@ export function MyCharactersIndex() {
 
     const characters = data?.body?.body || []
 
-    if (!characters.length)
-        return (
-            <div className="text-center text-muted-foreground py-20">
-                No characters found.
-            </div>
-        )
+if (!characters.length) {
+  return (
+    <Empty className="mt-24">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <Users className="h-8 w-8" />
+        </EmptyMedia>
+        <EmptyTitle>No characters found</EmptyTitle>
+        <EmptyDescription>
+          Get started by creating your first character.
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <Button onClick={() => navigate("/characters/create")}>
+          <Plus className="h-4 w-4 mr-2" />
+          Create Character
+        </Button>
+      </EmptyContent>
+    </Empty>
+  )
+}
 
     const handleDelete = async (id: string) => {
         setDeletingId(id)

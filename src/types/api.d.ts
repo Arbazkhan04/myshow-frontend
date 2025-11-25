@@ -222,6 +222,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/episode-orchestrator/generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Generate full AI episode video
+         * @description Triggers the pipeline to generate a complete AI video episode from a story and character. It uses Gemini for scene breakdown, image generation, TTS, and video synthesis before merging and uploading to S3.
+         */
+        post: operations["EpisodeOrchestratorController_generateEpisode"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/episode-orchestrator/generate-stream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EpisodeOrchestratorController_generateStream"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/episode-orchestrator/generate-stream-mock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EpisodeOrchestratorController_generateStreamMock"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/episode-orchestrator/merge-test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EpisodeOrchestratorController_mergeScenesTest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1": {
         parameters: {
             query?: never;
@@ -378,7 +446,7 @@ export interface components {
             /** @description If true, character will have a custom voice and voice_tone/voice_accent become required. */
             createcustomvoice?: boolean;
             /** @description Reference to the Voice document ID */
-            characterVoice: string;
+            characterVoice?: string;
             /** @description User who created this character */
             created_by: string;
         };
@@ -720,6 +788,128 @@ export interface operations {
                 content: {
                     "application/json": unknown;
                 };
+            };
+        };
+    };
+    EpisodeOrchestratorController_generateEpisode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Full story text used to generate episode scenes
+                     * @example Once upon a time in a futuristic city, Luna the AI explorer discovers an ancient robot buried under neon ruins...
+                     */
+                    story: string;
+                    character: {
+                        /** @example 6924b7fdd18c3f3996a2d327 */
+                        _id?: string;
+                        /** @example Luna the Explorer */
+                        name?: string;
+                        /** @example https://example-bucket.s3.amazonaws.com/characters/luna.png */
+                        Image?: string;
+                        characterVoice?: {
+                            /** @example 21m00Tcm4TlvDq8ikWAM */
+                            voice_id?: string;
+                        };
+                    };
+                    /**
+                     * @description User ID who initiated the episode generation
+                     * @example 64f22af9b3f8d8d3b93ef1a4
+                     */
+                    userId: string;
+                    /**
+                     * @description Optional art style for generated visuals
+                     * @example realistic
+                     */
+                    artStyle?: string;
+                    /**
+                     * @description Target video resolution
+                     * @example 720p
+                     * @enum {string}
+                     */
+                    resolution?: "480p" | "720p" | "1080p";
+                    /**
+                     * @description Video generation mode
+                     * @example wan_lipsync
+                     * @enum {string}
+                     */
+                    mode?: "wan_lipsync" | "external_merge";
+                };
+            };
+        };
+        responses: {
+            /** @description Successfully generated episode */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Episode generation failed due to internal error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EpisodeOrchestratorController_generateStream: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EpisodeOrchestratorController_generateStreamMock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EpisodeOrchestratorController_mergeScenesTest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

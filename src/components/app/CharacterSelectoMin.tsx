@@ -72,6 +72,7 @@ export default function CharacterSelectorMin({
               characterVoice: {
                 voice_id: char.characterVoice?.voice_id,
               },
+              artStyle: char.art_style
             };
 
             return (

@@ -24,7 +24,7 @@ import {
 import clsx from "clsx";
 import { useDispatch } from "react-redux";
 import { logout } from "@/store/auth-slice";
-import { UsersIcon } from "lucide-react";
+import { FaClipboardList, FaCoins } from "react-icons/fa";
 
 export function AdminLayout() {
   const location = useLocation();
@@ -34,9 +34,11 @@ export function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const menuItems = [
-    { icon: FiHome, label: "Dashboard", to: "/admin/dashboard" },
-    { icon: UsersIcon, label: "Users Management", to: "/admin/users-management" },
-  ];
+  { icon: FiHome, label: "Dashboard", to: "/admin/dashboard" },
+  { icon: FiUsers, label: "Users Management", to: "/admin/users-management" },
+  { icon: FaClipboardList, label: "Plans Management", to: "/admin/plans-management" },
+  { icon: FaCoins, label: "Token Packs Management", to: "/admin/token-packs-management" },
+];
 
   const Sidebar = (
     <aside

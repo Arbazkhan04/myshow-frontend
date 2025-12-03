@@ -63,14 +63,13 @@ export default function EpisodeForm() {
     defaultValues: {
       story: "",
       character: null,
-      artStyle: "realistic",
       resolution: "720P",
       mode: "wan_lipsync",
     },
   });
 
   const onSubmit = async (data: any) => {
-    const payload = { ...data, userId };
+    let payload = { ...data, userId };
 
     setOpen(true);
     setProgress(0);
@@ -79,7 +78,8 @@ export default function EpisodeForm() {
     setErrorMsg(null);
 
     try {
-      const res = await fetch(`${SERVER_API_URL}/episode-orchestrator/generate-stream-mock`, {
+      payload["artStyle"] = data.character.artStyle;
+      const res = await fetch(`${SERVER_API_URL}/episode-orchestrator/generate-stream`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -127,8 +127,6 @@ export default function EpisodeForm() {
     }
   };
 
-  const selectedCharacter = watch("character");
-
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 w-full">
@@ -163,28 +161,6 @@ export default function EpisodeForm() {
 
         {/* SETTINGS GRID */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {/* ART STYLE */}
-          <div>
-            <label className="font-medium">Art Style</label>
-            <Controller
-              name="artStyle"
-              control={control}
-              rules={{ required: "Art style is required" }}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full mt-1"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="realistic">Realistic</SelectItem>
-                    <SelectItem value="cartoon">Cartoon</SelectItem>
-                    <SelectItem value="anime">Anime</SelectItem>
-                    <SelectItem value="fantasy">Fantasy</SelectItem>
-                    <SelectItem value="scifi">Sci-Fi</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.artStyle && <p className="text-red-500 text-sm">{errors.artStyle.message}</p>}
-          </div>
 
           {/* RESOLUTION */}
           <div>
@@ -206,25 +182,6 @@ export default function EpisodeForm() {
             {errors.resolution && <p className="text-red-500 text-sm">{errors.resolution.message}</p>}
           </div>
 
-          {/* MODE */}
-          <div>
-            <label className="font-medium">Mode</label>
-            <Controller
-              name="mode"
-              control={control}
-              rules={{ required: "Mode is required" }}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-full mt-1"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="wan_lipsync">WAN Lipsync</SelectItem>
-                    <SelectItem value="external_merge">External Merge</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            {errors.mode && <p className="text-red-500 text-sm">{errors.mode.message}</p>}
-          </div>
         </div>
 
         {/* SUBMIT BUTTON */}

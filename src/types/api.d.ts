@@ -222,6 +222,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/episode/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get episode by ID
+         * @description Fetches a single episode by its unique ID with populated character and user information.
+         */
+        get: operations["EpisodeController_getEpisodeById"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete episode by ID
+         * @description Permanently deletes an episode from the database by its unique ID.
+         */
+        delete: operations["EpisodeController_deleteEpisode"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/episode": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Filter and paginate episodes
+         * @description Retrieve episodes with optional filters (userId, characterId, art_style, visibility) and pagination support. Returns total count and page information.
+         */
+        get: operations["EpisodeController_filterEpisodes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/episode-orchestrator/generate": {
         parameters: {
             query?: never;
@@ -258,22 +302,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/episode-orchestrator/generate-stream-mock": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["EpisodeOrchestratorController_generateStreamMock"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/episode-orchestrator/merge-test": {
         parameters: {
             query?: never;
@@ -284,6 +312,206 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["EpisodeOrchestratorController_mergeScenesTest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stripe/create-subscription-checkout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a subscription checkout session
+         * @description Creates a new Stripe checkout session for purchasing a subscription plan.
+         */
+        post: operations["StripeController_createSubscriptionCheckout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stripe/create-token-pack-checkout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a token pack checkout session
+         * @description Creates a new Stripe checkout session for purchasing a token pack.
+         */
+        post: operations["StripeController_createTokenPackCheckout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stripe/webhook": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Handle Stripe webhook events
+         * @description Processes incoming Stripe webhook events. This endpoint is public and should be configured in your Stripe dashboard. Verifies webhook signature and processes events like payment success, failure, etc.
+         */
+        post: operations["StripeController_handleWebhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all subscription plans with pagination */
+        get: operations["PlansController_getAllPlans"];
+        put?: never;
+        /** Create a new subscription plan — Admin only */
+        post: operations["PlansController_createPlan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/plans/active": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all active subscription plans */
+        get: operations["PlansController_getActivePlans"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/plans/tier/{tier}/{interval}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get plan by tier and interval */
+        get: operations["PlansController_getPlanByTier"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/plans/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get plan by ID */
+        get: operations["PlansController_getPlanById"];
+        /** Update subscription plan — Admin only */
+        put: operations["PlansController_updatePlan"];
+        post?: never;
+        /** Delete subscription plan (soft delete) — Admin only */
+        delete: operations["PlansController_deletePlan"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/plans/token-packs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all available token packs */
+        get: operations["PlansController_getAllTokenPacks"];
+        put?: never;
+        /** Create a new token pack — Admin only */
+        post: operations["PlansController_createTokenPack"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/plans/token-packs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update token pack — Admin only */
+        put: operations["PlansController_updateTokenPack"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/plans/calculate-cost": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Calculate token cost for video duration and resolution */
+        get: operations["PlansController_calculateCost"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/plans/transactions/my-history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get current user payment history */
+        get: operations["PlansController_getMyTransactions"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -349,6 +577,23 @@ export interface components {
              * @example https://example.com/new-profile.jpg
              */
             profilePic?: string;
+            /** @description Current subscription plan ID */
+            currentPlan?: Record<string, never>;
+            /**
+             * @description Remaining tokens from subscription
+             * @example 450
+             */
+            tokensRemaining?: number;
+            /**
+             * @description Purchased tokens from token packs
+             * @example 100
+             */
+            purchasedTokens?: number;
+            /**
+             * Format: date-time
+             * @description Next token reset date
+             */
+            tokensResetDate?: string;
         };
         CreateUserDto: {
             /**
@@ -449,6 +694,196 @@ export interface components {
             characterVoice?: string;
             /** @description User who created this character */
             created_by: string;
+        };
+        CreateSubscriptionCheckoutDto: {
+            /**
+             * @description User ID for the subscription
+             * @example 507f1f77bcf86cd799439011
+             */
+            userId: string;
+            /**
+             * @description ID of the plan to subscribe to
+             * @example plan_123456789
+             */
+            planId: string;
+        };
+        CreateTokenPackCheckoutDto: {
+            /**
+             * @description User ID for the token pack purchase
+             * @example 507f1f77bcf86cd799439011
+             */
+            userId: string;
+            /**
+             * @description ID of the token pack to purchase
+             * @example pack_123456789
+             */
+            tokenPackId: string;
+        };
+        CreatePlanDto: {
+            /**
+             * @description Subscription tier level
+             * @example CREATOR
+             * @enum {string}
+             */
+            tier: "STARTER" | "CREATOR" | "PRO" | "AGENCY";
+            /**
+             * @description Display name of the plan
+             * @example Creator Plan
+             */
+            name: string;
+            /**
+             * @description Billing interval (monthly or annual)
+             * @example MONTHLY
+             * @enum {string}
+             */
+            interval: "MONTHLY" | "ANNUAL";
+            /**
+             * @description Price in USD
+             * @example 49
+             */
+            priceUSD: number;
+            /**
+             * @description Number of tokens per billing period
+             * @example 450
+             */
+            tokensPerPeriod: number;
+            /**
+             * @description Queue priority level for video generation
+             * @example 20
+             * @enum {number}
+             */
+            queuePriority: 10 | 20 | 30 | 40;
+            /**
+             * @description List of features included in the plan
+             * @example [
+             *       "Priority queue",
+             *       "All resolutions",
+             *       "Faster rendering"
+             *     ]
+             */
+            features: string[];
+            /**
+             * @description Whether the plan is active and available for purchase
+             * @default true
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * @description Detailed description of the plan
+             * @example Perfect for influencers and regular content creators
+             */
+            description?: string;
+        };
+        UpdatePlanDto: {
+            /**
+             * @description Subscription tier level
+             * @example CREATOR
+             * @enum {string}
+             */
+            tier?: "STARTER" | "CREATOR" | "PRO" | "AGENCY";
+            /**
+             * @description Display name of the plan
+             * @example Creator Plan
+             */
+            name?: string;
+            /**
+             * @description Billing interval (monthly or annual)
+             * @example MONTHLY
+             * @enum {string}
+             */
+            interval?: "MONTHLY" | "ANNUAL";
+            /**
+             * @description Price in USD
+             * @example 49
+             */
+            priceUSD?: number;
+            /**
+             * @description Number of tokens per billing period
+             * @example 450
+             */
+            tokensPerPeriod?: number;
+            /**
+             * @description Queue priority level for video generation
+             * @example 20
+             * @enum {number}
+             */
+            queuePriority?: 10 | 20 | 30 | 40;
+            /**
+             * @description List of features included in the plan
+             * @example [
+             *       "Priority queue",
+             *       "All resolutions",
+             *       "Faster rendering"
+             *     ]
+             */
+            features?: string[];
+            /**
+             * @description Whether the plan is active and available for purchase
+             * @default true
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * @description Detailed description of the plan
+             * @example Perfect for influencers and regular content creators
+             */
+            description?: string;
+        };
+        CreateTokenPackDto: {
+            /**
+             * @description Display name of the token pack
+             * @example Medium Pack
+             */
+            name: string;
+            /**
+             * @description Number of tokens in the pack
+             * @example 250
+             */
+            tokens: number;
+            /**
+             * @description Price in USD
+             * @example 25
+             */
+            priceUSD: number;
+            /**
+             * @description Whether the token pack is active and available for purchase
+             * @default true
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * @description Detailed description of the token pack
+             * @example Most popular token pack - best value!
+             */
+            description?: string;
+        };
+        UpdateTokenPackDto: {
+            /**
+             * @description Display name of the token pack
+             * @example Medium Pack
+             */
+            name?: string;
+            /**
+             * @description Number of tokens in the pack
+             * @example 250
+             */
+            tokens?: number;
+            /**
+             * @description Price in USD
+             * @example 25
+             */
+            priceUSD?: number;
+            /**
+             * @description Whether the token pack is active and available for purchase
+             * @default true
+             * @example true
+             */
+            isActive: boolean;
+            /**
+             * @description Detailed description of the token pack
+             * @example Most popular token pack - best value!
+             */
+            description?: string;
         };
     };
     responses: never;
@@ -791,6 +1226,120 @@ export interface operations {
             };
         };
     };
+    EpisodeController_getEpisodeById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Episode ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Episode fetched successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Episode not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error - Failed to fetch episode */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EpisodeController_deleteEpisode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Episode ID to delete */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Episode deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Episode not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error - Failed to delete episode */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EpisodeController_filterEpisodes: {
+        parameters: {
+            query?: {
+                /** @description Filter by user ID */
+                userId?: string;
+                /** @description Filter by character ID */
+                characterId?: string;
+                /** @description Filter by art style */
+                art_style?: "cartoon" | "anime" | "realistic" | "fantasy" | "scifi";
+                /** @description Filter by visibility */
+                visibility?: "onlyme" | "public";
+                /** @description Page number */
+                page?: number;
+                /** @description Results per page */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Episodes filtered successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Internal server error - Failed to filter episodes */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     EpisodeOrchestratorController_generateEpisode: {
         parameters: {
             query?: never;
@@ -807,7 +1356,7 @@ export interface operations {
                      */
                     story: string;
                     character: {
-                        /** @example 6924b7fdd18c3f3996a2d327 */
+                        /** @example 693024dcd41be0486063e2a6 */
                         _id?: string;
                         /** @example Luna the Explorer */
                         name?: string;
@@ -879,23 +1428,6 @@ export interface operations {
             };
         };
     };
-    EpisodeOrchestratorController_generateStreamMock: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     EpisodeOrchestratorController_mergeScenesTest: {
         parameters: {
             query?: never;
@@ -905,6 +1437,372 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StripeController_createSubscriptionCheckout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSubscriptionCheckoutDto"];
+            };
+        };
+        responses: {
+            /** @description Subscription checkout session created successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Bad request - User not found or invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StripeController_createTokenPackCheckout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTokenPackCheckoutDto"];
+            };
+        };
+        responses: {
+            /** @description Token pack checkout session created successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Bad request - User not found or invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StripeController_handleWebhook: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Stripe webhook signature for event verification */
+                "stripe-signature": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Webhook processed successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Invalid signature or missing raw body */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error - Failed to process webhook */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PlansController_getAllPlans: {
+        parameters: {
+            query?: {
+                limit?: number;
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Plans fetched successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PlansController_createPlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePlanDto"];
+            };
+        };
+        responses: {
+            /** @description Plan created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PlansController_getActivePlans: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Active plans fetched successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PlansController_getPlanByTier: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tier: string;
+                interval: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Plan found successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PlansController_getPlanById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Plan found successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PlansController_updatePlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePlanDto"];
+            };
+        };
+        responses: {
+            /** @description Plan updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PlansController_deletePlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Plan deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PlansController_getAllTokenPacks: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Token packs fetched successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PlansController_createTokenPack: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTokenPackDto"];
+            };
+        };
+        responses: {
+            /** @description Token pack created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PlansController_updateTokenPack: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTokenPackDto"];
+            };
+        };
+        responses: {
+            /** @description Token pack updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PlansController_calculateCost: {
+        parameters: {
+            query: {
+                /** @description Duration in seconds */
+                duration: number;
+                resolution: "480P" | "720P" | "1080P";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Cost calculated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PlansController_getMyTransactions: {
+        parameters: {
+            query?: {
+                limit?: number;
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Transactions fetched successfully */
             200: {
                 headers: {
                     [name: string]: unknown;

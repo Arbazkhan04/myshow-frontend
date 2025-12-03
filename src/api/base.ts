@@ -14,6 +14,6 @@ export const baseApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Audio', 'Character', 'User', 'Video'],
+  tagTypes: ['Audio', 'Character', 'User', 'Video', 'Plan', 'TokenPack'],
   endpoints: () => ({}),
 });

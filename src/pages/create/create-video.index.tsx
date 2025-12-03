@@ -1,4 +1,3 @@
-import VideoPlayer from "@/components/app/VideoPlayer";
 import { CreateVideo } from "./CreateVideo";
 
 export default function CreateVideoIndex() {

@@ -9,3 +9,15 @@ export type User = {
     "createdAt": string,
     "updatedAt": string,
 }
+
+export enum PlanTier {
+  STARTER = 'STARTER',
+  CREATOR = 'CREATOR',
+  PRO = 'PRO',
+  AGENCY = 'AGENCY',
+}
+
+export enum PlanInterval {
+  MONTHLY = 'MONTHLY',
+  ANNUAL = 'ANNUAL',
+}

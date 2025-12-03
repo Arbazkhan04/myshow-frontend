@@ -86,7 +86,7 @@ export function LibraryIndex() {
       <div className="w-full container mt-10">
         <EpisodesView
           filters={{
-            // userId,
+            userId,
             visibility: "onlyme",
             ...(artStyle ? { art_style: artStyle } : {}),
             page,

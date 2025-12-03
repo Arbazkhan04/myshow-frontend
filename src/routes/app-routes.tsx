@@ -10,6 +10,8 @@ import { MyCharactersIndex } from "@/pages/characters/my-characters/my-character
 import { CommunityIndex } from "@/pages/community/community.index";
 import CreateVideoIndex from "@/pages/create/create-video.index";
 import { LibraryIndex } from "@/pages/library/library.index";
+import { PlansIndexPage } from "@/pages/plans/plans.index";
+import { TokenPacksIndexPage } from "@/pages/plans/token-packs.index";
 import { ProfileIndex } from "@/pages/profile/profile.index";
 import { Navigate, Route, Routes } from "react-router";
 
@@ -28,6 +30,9 @@ export function AppRoutes() {
                 <Route path="library" element={<LibraryIndex />} />
                 <Route path="community" element={<CommunityIndex />} />
                 <Route path="profile" element={<ProfileIndex />} />
+                <Route path="subscription/plans" element={<PlansIndexPage />} />
+                <Route path="subscription/token-packs" element={<TokenPacksIndexPage />} />
+                <Route path="subscription/success" element={<PlansIndexPage />} />
             </Route>
 
             <Route path="/admin/login" element={<AdminLoginIndex />} />

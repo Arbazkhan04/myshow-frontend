@@ -9,7 +9,7 @@ import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { GeneratingAnimation } from "./GeneratingAnimation";
-import { Shuffle, ArrowRight, ArrowLeft, Check, Smile, Frown, Sparkles, Zap, Wind, Drama, User, Palette, Volume2, Eye, Shirt, BookOpen, Stars } from "lucide-react";
+import { Shuffle, ArrowRight, ArrowLeft, Check, Smile, Frown, Sparkles, Zap, Wind, Drama, User, Palette, Volume2, Eye, Shirt, BookOpen, Stars, LetterTextIcon } from "lucide-react";
 import { toast } from "sonner";
 import { IoMdFemale, IoMdMale, IoMdTransgender } from "react-icons/io";
 import { IoIosColorPalette } from "react-icons/io";
@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import { useCreateCharacterMutation } from "@/api/character";
 import { useNavigate } from "react-router";
+import { SimpleUploader } from "../common/file-uploader";
 
 interface CharacterData {
   name: string;
@@ -100,6 +101,7 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
   const [createCharacter] = useCreateCharacterMutation();
   const [isGenerating, setIsGenerating] = useState(false);
   const navigate = useNavigate();
+  const [userGivenImage, setUserGivenImage] = useState("");
   const [characterData, setCharacterData] = useState<CharacterData>({
     name: "",
     artStyle: "",
@@ -193,9 +195,12 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
     setIsGenerating(true);
     
     // Format the data according to requirements
-    const formattedData = formatCharacterData(saveAsTemplate);
+    let formattedData = formatCharacterData(saveAsTemplate);
     
     // Log the formatted data to console
+    if (userGivenImage) {
+      formattedData['userGivenImage'] = userGivenImage;
+    }
     console.log(formattedData);
     const response = await createCharacter(formattedData);
     const rd = response.data as any;
@@ -282,6 +287,17 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
                   value={characterData.name}
                   onChange={(e) => updateData("name", e.target.value)}
                   placeholder="Enter character name"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  Your Image
+                </Label>
+                <SimpleUploader
+                  value={userGivenImage}
+                  setValue={setUserGivenImage}
                 />
               </div>
 

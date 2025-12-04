@@ -12,7 +12,7 @@ export function App() {
       <ThemeProvider defaultTheme="light" storageKey="myshowai-theme">
         <AppRoutes />
         <Toaster />
-        {IS_DEVELOPMENT_MODE && <ThemeToggle />}
+        <ThemeToggle />
       </ThemeProvider>
     </Provider>
   )

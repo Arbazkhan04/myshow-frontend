@@ -26,7 +26,7 @@ export const MainLayout = () => {
       <main className="relative flex-1 overflow-y-auto pb-20 sm:pb-28">
         <Outlet />
         <Button variant="ghost" className='absolute top-12 left-6 rounded-full' onClick={() => navigate("/")}>
-          <img src="/logo.png" alt="myshow.ai logo" className='w-12 h-12 object-contain' />
+          <img src="/logo.png" alt="myshow.ai logo" className='w-8 h-8 object-contain' />
         </Button>
         <div className='absolute top-10 right-6 rounded-full'>
           <ProfileShortcut />

@@ -40,6 +40,7 @@ export function LoginForm({ onSuccess }: {
         // Show success toast with backend message
         toast(response.message);
         onSuccess();
+        window.location.reload();
       } else {
         // Handle case where token is not present
         toast('Login Failed', {

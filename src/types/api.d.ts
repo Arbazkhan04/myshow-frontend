@@ -117,7 +117,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Create a character and generate its image using AI */
+        /**
+         * Create a character and generate its image using AI
+         * @description Generate a character image from text description or transform a user-provided image. If userGivenImage is provided, the system will use image-to-image transformation; otherwise, it will generate from scratch using text-to-image.
+         */
         post: operations["CharacterWorkflowController_createCharacter"];
         delete?: never;
         options?: never;
@@ -313,6 +316,46 @@ export interface paths {
         put?: never;
         post: operations["EpisodeOrchestratorController_mergeScenesTest"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/storage/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Upload file(s) to S3
+         * @description Upload one or multiple files to S3 storage. Files are stored in the specified folder with unique filenames.
+         */
+        post: operations["StorageController_uploadFiles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/storage/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete file from S3
+         * @description Delete a file from S3 storage using its key (path in bucket).
+         */
+        delete: operations["StorageController_deleteFile"];
         options?: never;
         head?: never;
         patch?: never;
@@ -685,6 +728,8 @@ export interface components {
             appearance: components["schemas"]["AppearanceDto"];
             backstory?: string;
             Image?: string;
+            /** @description S3 URL of user-provided image for character generation */
+            userGivenImage?: string;
             is_premium?: boolean;
             is_sample?: boolean;
             is_template?: boolean;
@@ -1356,7 +1401,7 @@ export interface operations {
                      */
                     story: string;
                     character: {
-                        /** @example 693024dcd41be0486063e2a6 */
+                        /** @example 693047f0881369d125e9dec8 */
                         _id?: string;
                         /** @example Luna the Explorer */
                         name?: string;
@@ -1438,6 +1483,82 @@ export interface operations {
         requestBody?: never;
         responses: {
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StorageController_uploadFiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** @description Files to upload (supports multiple files) */
+                    files: string[];
+                    /**
+                     * @description Folder path in S3 bucket
+                     * @default uploads
+                     */
+                    folder?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Files uploaded successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Unsupported media type */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StorageController_deleteFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description S3 object key (path) of the file to delete */
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description File deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Internal server error - Failed to delete file */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };

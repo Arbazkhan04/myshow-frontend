@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "cross-env VITE_MODE=development vite --host",
     "prod": "cross-env VITE_MODE=production vite --host",
-    "build": "vite build",
+    "build": "cross-env VITE_MODE=production vite build",
     "format": "prettier --write \"src/**/*.ts\"",
     "api": "openapi-typescript ../backend/swagger.json -o src/types/api.d.ts",
     "lint": "eslint .",

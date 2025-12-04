@@ -10,7 +10,7 @@ export const planApi = baseApi.injectEndpoints({
       operations['PlansController_getAllPlans']['parameters']['query']
     >({
       query: (query) => ({
-        url: `/plans`,
+        url: `/plans/all-plans`,
         method: 'GET',
         params: query,
       }),
@@ -60,7 +60,7 @@ export const planApi = baseApi.injectEndpoints({
       operations['PlansController_getPlanById']['parameters']['path']
     >({
       query: ({ id }) => ({
-        url: `/plans/${id}`,
+        url: `/plans/getPlanById/${id}`,
         method: 'GET',
       }),
       providesTags: ['Plan']
@@ -75,7 +75,7 @@ export const planApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ id, body }) => ({
-        url: `/plans/${id}`,
+        url: `/plans/updatePlanById/${id}`,
         method: 'PUT',
         body,
       }),
@@ -88,7 +88,7 @@ export const planApi = baseApi.injectEndpoints({
       operations['PlansController_deletePlan']['parameters']['path']
     >({
       query: ({ id }) => ({
-        url: `/plans/${id}`,
+        url: `/plans/deletePlanById/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Plan']

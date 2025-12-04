@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { CenteredFormLayout } from "@/components/common/centered-form.layout";
 import { Button } from "@/components/ui/button";
@@ -10,13 +9,6 @@ export function SuccessSubscription() {
     const navigate = useNavigate();
     const searchParams = useSearchParams();
     const sessionId = searchParams[0].get("session_id");
-
-    useEffect(() => {
-        // If there's no session_id, redirect immediately
-        if (!sessionId) {
-            navigate("/profile");
-        }
-    }, [sessionId, navigate]);
 
     const handleGoToProfile = () => {
         navigate("/profile");
@@ -33,19 +25,17 @@ export function SuccessSubscription() {
                 {/* Header */}
                 <div className="space-y-2">
                     <h1 className="text-2xl font-bold text-card-foreground">
-                        Subscription Successful!
+                        Payment Successful!
                     </h1>
                     <p className="text-muted-foreground text-sm">
-                        You have successfully subscribed to your plan.
+                        You have successfully completed the payment.
                     </p>
                 </div>
 
                 {/* Action Button */}
-                {sessionId && (
                     <Button className="w-full mt-4" onClick={handleGoToProfile}>
                         Go to Profile
                     </Button>
-                )}
             </div>
         </CenteredFormLayout>
     );

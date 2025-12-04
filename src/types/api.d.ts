@@ -165,6 +165,31 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/audio-model/text-to-speech-with-timestamps": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Generate speech audio with word-level timestamps
+         * @description Converts text to speech using ElevenLabs API and returns:
+         *             - Audio URL (base64 or file path)
+         *             - Word-level alignment with timestamps
+         *             - Total audio duration
+         *
+         *             Supports customizable voice settings and optional file saving.
+         */
+        post: operations["AudioModelController_textToSpeechWithTimestamps"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/character/characterById/{id}": {
         parameters: {
             query?: never;
@@ -246,7 +271,11 @@ export interface paths {
         delete: operations["EpisodeController_deleteEpisode"];
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Update episode by ID
+         * @description Updates an existing episode by its unique ID. All fields are optional. Only provided fields will be updated.
+         */
+        patch: operations["EpisodeController_updateEpisode"];
         trace?: never;
     };
     "/api/v1/episode": {
@@ -428,11 +457,27 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get all subscription plans with pagination */
-        get: operations["PlansController_getAllPlans"];
+        get?: never;
         put?: never;
         /** Create a new subscription plan — Admin only */
         post: operations["PlansController_createPlan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/plans/all-plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all subscription plans with pagination */
+        get: operations["PlansController_getAllPlans"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -473,7 +518,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/plans/{id}": {
+    "/api/v1/plans/getPlanById/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -482,8 +527,40 @@ export interface paths {
         };
         /** Get plan by ID */
         get: operations["PlansController_getPlanById"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/plans/updatePlanById/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
         /** Update subscription plan — Admin only */
         put: operations["PlansController_updatePlan"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/plans/deletePlanById/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         post?: never;
         /** Delete subscription plan (soft delete) — Admin only */
         delete: operations["PlansController_deletePlan"];
@@ -739,6 +816,61 @@ export interface components {
             characterVoice?: string;
             /** @description User who created this character */
             created_by: string;
+        };
+        TextToSpeechDto: {
+            /**
+             * @description The text to convert to speech
+             * @example Hello! This is a test of the text to speech system.
+             */
+            text: string;
+            /**
+             * @description The voice ID from ElevenLabs to use for speech generation
+             * @example EXAVITQu4vr4xnSDxMaL
+             */
+            voiceId: string;
+            /**
+             * @description Model ID to use for speech generation
+             * @default eleven_turbo_v2
+             * @example eleven_turbo_v2
+             */
+            model_id: string;
+            /**
+             * @description Output audio format
+             * @default mp3
+             * @example mp3
+             * @enum {string}
+             */
+            output_format: "mp3" | "wav";
+            /**
+             * @description Voice stability (0.0 to 1.0)
+             * @default 0.5
+             * @example 0.5
+             */
+            stability: number;
+            /**
+             * @description Similarity boost (0.0 to 1.0)
+             * @default 0.8
+             * @example 0.8
+             */
+            similarity_boost: number;
+            /**
+             * @description Voice style (0.0 to 1.0)
+             * @default 0
+             * @example 0
+             */
+            style: number;
+            /**
+             * @description Enable speaker boost for enhanced clarity
+             * @default true
+             * @example true
+             */
+            speaker_boost: boolean;
+            /**
+             * @description Whether to save the audio file to disk
+             * @default false
+             * @example true
+             */
+            saveToFile: boolean;
         };
         CreateSubscriptionCheckoutDto: {
             /**
@@ -1202,6 +1334,39 @@ export interface operations {
             };
         };
     };
+    AudioModelController_textToSpeechWithTimestamps: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TextToSpeechDto"];
+            };
+        };
+        responses: {
+            /** @description Speech generated successfully with timestamps */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
     CharacterController_getCharacterById: {
         parameters: {
             query?: never;
@@ -1345,6 +1510,86 @@ export interface operations {
             };
         };
     };
+    EpisodeController_updateEpisode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Episode ID to update */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example Updated story content... */
+                    story?: string;
+                    /**
+                     * @example wan_lipsync
+                     * @enum {string}
+                     */
+                    mode?: "wan_lipsync" | "external_merge";
+                    /**
+                     * @example 720p
+                     * @enum {string}
+                     */
+                    resolution?: "480p" | "720p" | "1080p";
+                    /**
+                     * @example anime
+                     * @enum {string}
+                     */
+                    art_style?: "cartoon" | "anime" | "realistic" | "fantasy" | "scifi";
+                    /**
+                     * @example public
+                     * @enum {string}
+                     */
+                    visibility?: "onlyme" | "public";
+                    /** @example 200 */
+                    watchCount?: number;
+                    /** @example 50 */
+                    likes?: number;
+                    /** @example 10 */
+                    shares?: number;
+                    /** @example 15 */
+                    downloads?: number;
+                    /** @example true */
+                    featured?: boolean;
+                    /** @example 180 */
+                    duration?: number;
+                    /** @example https://example.com/updated-video.mp4 */
+                    finalVideoUrl?: string;
+                    /** @example https://example.com/updated-subtitles.srt */
+                    subtitleUrl?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Episode updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Episode not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error - Failed to update episode */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     EpisodeController_filterEpisodes: {
         parameters: {
             query?: {
@@ -1401,7 +1646,7 @@ export interface operations {
                      */
                     story: string;
                     character: {
-                        /** @example 693047f0881369d125e9dec8 */
+                        /** @example 693194ee3e63f32835f3197f */
                         _id?: string;
                         /** @example Luna the Explorer */
                         name?: string;
@@ -1679,27 +1924,6 @@ export interface operations {
             };
         };
     };
-    PlansController_getAllPlans: {
-        parameters: {
-            query?: {
-                limit?: number;
-                page?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Plans fetched successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     PlansController_createPlan: {
         parameters: {
             query?: never;
@@ -1715,6 +1939,27 @@ export interface operations {
         responses: {
             /** @description Plan created successfully */
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PlansController_getAllPlans: {
+        parameters: {
+            query?: {
+                limit?: number;
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Plans fetched successfully */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

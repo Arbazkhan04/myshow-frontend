@@ -12,7 +12,6 @@ import CreateVideoIndex from "@/pages/create/create-video.index";
 import { LibraryIndex } from "@/pages/library/library.index";
 import { PlansIndexPage } from "@/pages/plans/plans.index";
 import { SuccessSubscription } from "@/pages/plans/success.subscription";
-import { SuccessTokenPacks } from "@/pages/plans/success.token";
 import { TokenPacksIndexPage } from "@/pages/plans/token-packs.index";
 import { ProfileIndex } from "@/pages/profile/profile.index";
 import { Navigate, Route, Routes } from "react-router";
@@ -21,8 +20,7 @@ export function AppRoutes() {
     return (
         <Routes>
 
-            <Route path="/subscription/success" element={<SuccessSubscription />} />
-            <Route path="/tokens/success" element={<SuccessTokenPacks />} />
+            <Route path="/payment/success" element={<SuccessSubscription />} />
 
             <Route path="/" element={<MainLayout />}>
                 <Route path="create" element={<CreateVideoIndex />} />

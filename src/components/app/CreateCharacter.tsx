@@ -19,6 +19,7 @@ import type { RootState } from "@/store/store";
 import { useCreateCharacterMutation } from "@/api/character";
 import { useNavigate } from "react-router";
 import { SimpleUploader } from "../common/file-uploader";
+import { useGetUserByIdQuery } from "@/api/user";
 
 interface CharacterData {
   name: string;
@@ -99,6 +100,7 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
   const createdBy = user ? user._id : "dummy";
   const [step, setStep] = useState(1);
   const [createCharacter] = useCreateCharacterMutation();
+  const { data: userData, isLoading: userLoading } = useGetUserByIdQuery({ id: createdBy });
   const [isGenerating, setIsGenerating] = useState(false);
   const navigate = useNavigate();
   const [userGivenImage, setUserGivenImage] = useState("");
@@ -254,6 +256,11 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
 
   const progress = (step / 3) * 100;
 
+  let canUploadImage = false;
+  if (userData) {
+    canUploadImage = ["CREATOR", "PRO", "AGENCY"].includes(userData?.body?.user?.currentPlan?.tier)
+  }
+
   return (
     <>
       <GeneratingAnimation open={isGenerating} characterName={characterData.name || "Your Character"} />
@@ -290,7 +297,7 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
                 />
               </div>
 
-              <div className="space-y-2">
+              {canUploadImage && <div className="space-y-2">
                 <Label className="flex items-center gap-2">
                   <User className="w-4 h-4" />
                   Your Image
@@ -299,7 +306,7 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
                   value={userGivenImage}
                   setValue={setUserGivenImage}
                 />
-              </div>
+              </div>}
 
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">

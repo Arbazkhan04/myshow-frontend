@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { getTokenFromCookie, decodeJwtPayload } from '@/lib/get-token';
+import { decodeJwtPayload } from '@/lib/get-token';
 
 type User = {
   _id: string;
@@ -11,8 +11,11 @@ interface AuthState {
   user: User | null;
 }
 
-const token = getTokenFromCookie();
-const user = decodeJwtPayload(token);
+// ✅ Get token from localStorage instead of cookies
+const token =
+  typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
+const user = token ? decodeJwtPayload(token) : null;
 
 const initialState: AuthState = {
   user,
@@ -22,12 +25,17 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login(state, action: PayloadAction<{ token: string; }>) {
-      document.cookie = `token=${action.payload.token}; path=/; secure; samesite=strict`;
-      state.user = decodeJwtPayload(token);
+    login(state, action: PayloadAction<{ token: string }>) {
+      // ✅ Save token to localStorage
+      localStorage.setItem('token', action.payload.token);
+
+      // ✅ Decode NEW token (not old one)
+      state.user = decodeJwtPayload(action.payload.token);
     },
+
     logout(state) {
-      document.cookie = `token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+      // ✅ Remove token from localStorage
+      localStorage.removeItem('token');
       state.user = null;
     },
   },

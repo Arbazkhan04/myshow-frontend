@@ -78,7 +78,7 @@ export function ProfileIndex() {
           This profile page requires authentication.
         </p>
         <div className="bg-primary/5 p-3 rounded-lg border border-primary/10">
-            <p className="font-medium text-sm text-primary-foreground/80 dark:text-primary-foreground/90">
+            <p className="font-medium text-sm text-foreground/80 dark:text-primary-foreground/90">
                 Please click on the Sign In button in the top-right corner
                 to log in or create an account.
             </p>

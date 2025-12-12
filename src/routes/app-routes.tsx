@@ -28,7 +28,6 @@ export function AppRoutes() {
                     <Route index element={<Navigate to="/characters/create" />} />
                     <Route path="create" element={<CreateCharacterIndex />} />
                     <Route path="my-characters" element={<MyCharactersIndex />} />
-                    <Route path="templates" element={<div>Templates</div>} />
                     <Route path="*" element={<Navigate to="/characters/create" />} />
                 </Route>
                 <Route path="library" element={<LibraryIndex />} />

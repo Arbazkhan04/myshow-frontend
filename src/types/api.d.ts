@@ -298,6 +298,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/episode/{id}/watch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Track episode watch
+         * @description Records a watch event for an episode. Creates a watch history record and atomically increments the episode watch count. Can be called multiple times per user to track repeated views.
+         */
+        post: operations["EpisodeController_trackWatch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/episode/{id}/like": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Like or unlike an episode
+         * @description Toggles like status for the current user on an episode. If already liked, removes the like. If not liked, adds a like. Uses atomic operations to prevent race conditions.
+         */
+        post: operations["EpisodeController_toggleLike"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/episode/{id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Track episode download
+         * @description Records a download event and returns the episode video URL. Creates a download history record and atomically increments the download count.
+         */
+        post: operations["EpisodeController_trackDownload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/episode/{id}/engagement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get user engagement status
+         * @description Retrieves the current user's engagement status for a specific episode, including like status, watch history, and download status.
+         */
+        get: operations["EpisodeController_getUserEngagement"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/episode-orchestrator/generate": {
         parameters: {
             query?: never;
@@ -636,6 +716,74 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/v1/episode/{episodeId}/comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get episode comments
+         * @description Retrieves all top-level comments for an episode with pagination. Supports sorting by newest or oldest. Excludes deleted comments.
+         */
+        get: operations["CommentController_getEpisodeComments"];
+        put?: never;
+        /**
+         * Create a comment or reply
+         * @description Creates a new comment on an episode or a reply to an existing comment. Supports @mentions and tracks reply-to relationships for nested comment threads.
+         */
+        post: operations["CommentController_createComment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/comment/{commentId}/replies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get comment replies
+         * @description Retrieves all replies to a specific comment with pagination. Returns replies sorted oldest first. Excludes deleted replies.
+         */
+        get: operations["CommentController_getCommentReplies"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/comment/{commentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete your comment
+         * @description Soft deletes your comment. Only the comment author can delete. The comment content is replaced with "[deleted]" to preserve thread context.
+         */
+        delete: operations["CommentController_deleteComment"];
+        options?: never;
+        head?: never;
+        /**
+         * Update your comment
+         * @description Updates the content of your own comment. Only the comment author can edit. Marks the comment as edited after update.
+         */
+        patch: operations["CommentController_updateComment"];
         trace?: never;
     };
     "/api/v1": {
@@ -1630,6 +1778,154 @@ export interface operations {
             };
         };
     };
+    EpisodeController_trackWatch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Episode ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Watch tracked successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Episode not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error - Could not track watch */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EpisodeController_toggleLike: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Episode ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Like toggled successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Episode not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error - Could not toggle like */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EpisodeController_trackDownload: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Episode ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Download tracked successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Episode not found or video not available */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error - Could not track download */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    EpisodeController_getUserEngagement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Episode ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description User engagement fetched successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Episode not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error - Could not fetch user engagement */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     EpisodeOrchestratorController_generateEpisode: {
         parameters: {
             query?: never;
@@ -1646,7 +1942,7 @@ export interface operations {
                      */
                     story: string;
                     character: {
-                        /** @example 693194ee3e63f32835f3197f */
+                        /** @example 693ab724d639a8b3373ea54d */
                         _id?: string;
                         /** @example Luna the Explorer */
                         name?: string;
@@ -2170,6 +2466,233 @@ export interface operations {
         responses: {
             /** @description Transactions fetched successfully */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CommentController_getEpisodeComments: {
+        parameters: {
+            query?: {
+                /** @description Sort order */
+                sortBy?: "newest" | "oldest";
+                /** @description Page number */
+                page?: unknown;
+                /** @description Comments per page */
+                limit?: unknown;
+            };
+            header?: never;
+            path: {
+                /** @description Episode ID */
+                episodeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Comments fetched successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Internal server error - Could not fetch comments */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CommentController_createComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Episode ID to comment on */
+                episodeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Comment content (supports @mentions)
+                     * @example Great episode! @john you should watch this
+                     */
+                    content: string;
+                    /**
+                     * @description Parent comment ID (if this is a reply)
+                     * @example 673b2c3d4e5f6g7h8i9j0k1l
+                     */
+                    parentCommentId?: string;
+                    /**
+                     * @description User being replied to (for @mention display)
+                     * @example 672fb3a25f348a0e8e9012d7
+                     */
+                    replyToUserId?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Comment created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Parent comment not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error - Could not create comment */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CommentController_getCommentReplies: {
+        parameters: {
+            query?: {
+                /** @description Page number */
+                page?: unknown;
+                /** @description Replies per page */
+                limit?: unknown;
+            };
+            header?: never;
+            path: {
+                /** @description Parent comment ID */
+                commentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Replies fetched successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Internal server error - Could not fetch replies */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CommentController_deleteComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Comment ID to delete */
+                commentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Comment deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Forbidden - You can only delete your own comments */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Comment not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error - Could not delete comment */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CommentController_updateComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Comment ID to update */
+                commentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Updated comment content
+                     * @example Updated: Great episode!
+                     */
+                    content: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Comment updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Forbidden - You can only edit your own comments */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Comment not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Internal server error - Could not update comment */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };

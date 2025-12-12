@@ -11,8 +11,7 @@ export function CharactersLayout() {
 
   const tabs = [
     { key: "create", label: "Create" },
-    { key: "my-characters", label: "My Characters" },
-    { key: "templates", label: "My Templates" },
+    { key: "my-characters", label: "My Characters" }
   ];
 
   return (

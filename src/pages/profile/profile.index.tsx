@@ -231,9 +231,10 @@ export function ProfileIndex() {
               <FiZap className="h-5 w-5 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{profile.tokensRemaining}</div>
+              <div className="text-2xl font-bold">{(profile.tokensRemaining || 0) + (profile.purchasedTokens || 0)}</div>
               <p className="text-xs text-muted-foreground">
-                {typeof profile.purchasedTokens === "number" && `${profile.purchasedTokens} purchased`}
+                {typeof profile.tokensRemaining === "number" && `${profile.tokensRemaining} credit and `}
+                {typeof profile.purchasedTokens === "number" && `${profile.purchasedTokens} additional`}
               </p>
             </CardContent>
           </Card>

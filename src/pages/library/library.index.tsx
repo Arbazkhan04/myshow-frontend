@@ -87,7 +87,6 @@ export function LibraryIndex() {
         <EpisodesView
           filters={{
             userId,
-            visibility: "onlyme",
             ...(artStyle ? { art_style: artStyle } : {}),
             page,
             limit,

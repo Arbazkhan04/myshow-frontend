@@ -647,15 +647,6 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
           ) : (
             <div className="flex gap-3">
               <Button
-                onClick={() => handleGenerate(true)}
-                disabled={isGenerating}
-                variant="outline"
-                className="rounded-lg"
-              >
-                <Check className="w-4 h-4 mr-2" />
-                Save as Template
-              </Button>
-              <Button
                 onClick={() => handleGenerate(false)}
                 disabled={isGenerating}
                 className="rounded-lg"

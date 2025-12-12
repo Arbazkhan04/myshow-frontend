@@ -35,6 +35,7 @@ export function AppRoutes() {
                 <Route path="profile" element={<ProfileIndex />} />
                 <Route path="subscription/plans" element={<PlansIndexPage />} />
                 <Route path="subscription/token-packs" element={<TokenPacksIndexPage />} />
+                <Route index element={<Navigate to="create" />} />
             </Route>
 
             <Route path="/admin/login" element={<AdminLoginIndex />} />

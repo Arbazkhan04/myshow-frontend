@@ -16,7 +16,7 @@ export default function CreateVideoIndex() {
       </section>
 
       {/* Form Section */}
-      <div className="w-full max-w-4xl mt-16 rounded-xl flex items-center justify-center">
+      <div className="px-4 w-full max-w-4xl mt-16 rounded-xl flex items-center justify-center">
         <CreateVideo />
       </div>
     </div>

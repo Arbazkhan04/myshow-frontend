@@ -129,7 +129,7 @@ export function ProfileShortcut() {
                                 <FiZap className="h-4 w-4 text-yellow-600 dark:text-yellow-400" /> Tokens Left
                             </span>
                             <span className="font-bold text-lg">
-                                {profile?.tokensRemaining ?? 'N/A'}
+                                {(profile?.tokensRemaining || 0) + (profile?.purchasedTokens || 0) ?? 'N/A'}
                             </span>
                         </div>
                         <div className="flex items-center justify-between text-sm">

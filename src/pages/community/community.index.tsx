@@ -3,11 +3,15 @@
 import { useState } from "react";
 import { EpisodesView } from "@/components/app/EpisodesView";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, LogIn } from "lucide-react";
 import { Select, SelectTrigger, SelectItem, SelectContent, SelectValue } from "@/components/ui/select";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/store/store";
 
 export function CommunityIndex() {
   // Local filter state
+  const user = useSelector((state: RootState) => state.auth.user);
+    const userId = user ? user._id : null;
   const [page, setPage] = useState(1);
   const [artStyle, setArtStyle] = useState<string>("");
 
@@ -65,8 +69,6 @@ export function CommunityIndex() {
             <ChevronLeft className="w-5 h-5" />
           </button>
 
-          <span className="text-sm text-muted-foreground">Page {page}</span>
-
           <button
             onClick={() => setPage((p) => p + 1)}
             className="p-2 rounded-md border hover:bg-accent"
@@ -77,7 +79,16 @@ export function CommunityIndex() {
       </div>
 
       {/* Community Episodes List */}
-      <div className="w-full container mt-10">
+      <div className="px-4 w-full container mt-10">
+        {!userId ? (
+                  <div className="w-full flex flex-col justify-center items-center py-20 opacity-80">
+                    <LogIn className="h-12 w-12 text-muted-foreground mb-4" />
+        
+                    <p className="text-lg text-muted-foreground max-w-sm text-center leading-relaxed">
+                      You need to login to view the episodes you’ve generated.
+                    </p>
+                  </div>
+                ) : (
         <EpisodesView
           filters={{
             visibility: "public",
@@ -86,6 +97,7 @@ export function CommunityIndex() {
             limit,
           }}
         />
+        )}
       </div>
     </div>
   );

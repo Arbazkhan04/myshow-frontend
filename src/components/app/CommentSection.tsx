@@ -108,7 +108,7 @@ export function CommentSection({ episodeId }: { episodeId: string }) {
   };
 
   return (
-    <div className="flex flex-col h-full border rounded-lg">
+    <div className="flex flex-col h-full border rounded-lg md:rounded-none">
 
       {/* HEADER */}
       <div className="flex items-center justify-between p-3 border-b dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-900">
@@ -155,7 +155,7 @@ export function CommentSection({ episodeId }: { episodeId: string }) {
       </div>
 
       {/* COMMENT LIST */}
-      <div className="flex-1 overflow-y-auto space-y-3 p-3">
+      <div className="flex-initial h-full overflow-y-auto space-y-3 p-3">
         {isLoading ? (
           <div className="text-center text-neutral-500">Loading...</div>
         ) : comments.length > 0 ? (

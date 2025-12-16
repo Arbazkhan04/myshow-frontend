@@ -8,7 +8,7 @@
     "prod": "cross-env VITE_MODE=production vite --host",
     "build": "cross-env VITE_MODE=production vite build",
     "format": "prettier --write \"src/**/*.ts\"",
-    "api": "openapi-typescript ../backend/swagger.json -o src/types/api.d.ts",
+    "api": "openapi-typescript ../myshow-backend/swagger.json -o src/types/api.d.ts",
     "lint": "eslint .",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",

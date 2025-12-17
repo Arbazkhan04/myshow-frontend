@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { DialogContent } from "@/components/ui/dialog";
 import { FaEye, FaHeart, FaDownload, FaCommentDots, FaArrowLeft } from "react-icons/fa";
 import { TbDownloadOff } from "react-icons/tb";
+import { HiDotsVertical } from "react-icons/hi";
 
 import VideoPlayer from "./VideoPlayer";
 
@@ -20,6 +21,8 @@ import { Button } from "../ui/button";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import EpisodeInfoSection from "./EpisodeInfoSection";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export const PORTRAIT_WIDTH = 360;
 export const PORTRAIT_HEIGHT = 640;
@@ -104,6 +107,11 @@ export function EpisodeDialog({ episodeId, isOpen }: { episodeId: string; isOpen
     setEpisode(prev => ({ ...prev, visibility: result.visibility }));
   };
 
+  const handleAllowedDownloadToggle = async () => {
+    const result = await updateEpisode({ id: episode._id, data: { allowDownload: !episode.allowDownload } }).unwrap();
+    setEpisode(prev => ({ ...prev, allowDownload: result.allowDownload }));
+  }
+
   return (
     <DialogContent
       className="p-0 bg-transparent shadow-none border-none overflow-hidden w-full max-w-full h-full sm:w-auto sm:max-w-none transition-all duration-300 ease-in-out"
@@ -121,9 +129,23 @@ export function EpisodeDialog({ episodeId, isOpen }: { episodeId: string; isOpen
             </div>
 
           </div>
-          {user?._id === episode.userId._id && <Button onClick={handleToggleVisibility} size="sm" className="absolute md:hidden bottom-10 right-4">
-            {episode.visibility === "onlyme" ? "Set Public" : "Set Private"}
-          </Button>}
+          {user?._id === episode.userId._id && (
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild className="absolute bottom-10 right-4 md:hidden  w-10 h-10 bg-black/30 justify-center rounded-full text-white font-semibold flex items-center ">
+                <HiDotsVertical className="w-5 h-5" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="left" align="end" className=" bg-neutral-100 dark:bg-neutral-800  p-2 rounded-md shadow-lg">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={handleToggleVisibility} className="hover:bg-neutral-300 dark:hover:bg-neutral-700">
+                    {episode.visibility === "onlyme" ? "Set Public" : "Set Private"}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleAllowedDownloadToggle} className="hover:bg-neutral-300 dark:hover:bg-neutral-700">
+                    {episode.allowDownload ? "Disable Download" : "Enable Download"}
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
           <div className="bg-background w-24 ">
 
           </div>
@@ -140,7 +162,7 @@ export function EpisodeDialog({ episodeId, isOpen }: { episodeId: string; isOpen
             <CommentSection episodeId={episode._id} />
           </div>
         </div>
-        <EpisodeInfoSection episode={episode} handleLike={handleLike} handleToggleVisibility={handleToggleVisibility} handleDownload={handleDownload} isDownloading={isDownloading} />
+        <EpisodeInfoSection episode={episode} handleLike={handleLike} handleToggleVisibility={handleToggleVisibility} handleDownload={handleDownload} isDownloading={isDownloading} handleAllowedDownloadToggle={handleAllowedDownloadToggle} />
 
       </div>
     </DialogContent>

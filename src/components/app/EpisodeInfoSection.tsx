@@ -7,7 +7,7 @@ import { CommentSection } from "./CommentSection";
 import { Button } from "../ui/button";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
-const EpisodeInfoSection = ({ episode, handleDownload, handleLike, handleToggleVisibility, isDownloading }: any) => {
+const EpisodeInfoSection = ({ episode, handleDownload, handleLike, handleToggleVisibility, isDownloading, handleAllowedDownloadToggle }: any) => {
     const user = useSelector((state: RootState) => state.auth.user);
     return (
         <div className={`hidden md:flex md:flex-col md:h-[${PORTRAIT_HEIGHT}px] md:w-[${PORTRAIT_WIDTH}px] bg-white dark:bg-neutral-900`}
@@ -38,9 +38,12 @@ const EpisodeInfoSection = ({ episode, handleDownload, handleLike, handleToggleV
             </div>
             {/* Set Private Button */}
             {user?._id === episode.userId._id && (
-                <div className="px-4 pb-2">
-                    <Button onClick={handleToggleVisibility} size="sm" className="w-full">
+                <div className="px-4 pb-2 flex items-center gap-2 w-full">
+                    <Button onClick={handleToggleVisibility} size="sm" className="flex-1">
                         {episode.visibility === "onlyme" ? "Set Public" : "Set Private"}
+                    </Button>
+                    <Button onClick={handleAllowedDownloadToggle} size="sm" className="flex-1">
+                        {episode.allowDownload ? "Disable Download" : "Enable Download"}
                     </Button>
                 </div>
             )}

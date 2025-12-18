@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
-import { useGetCharactersByUserQuery } from "@/api/character";
+import { useGetCharactersByUserQuery, useGetDefaultCharactersQuery } from "@/api/character";
 import { FaUserAltSlash } from "react-icons/fa";
 
 import {
@@ -23,11 +23,18 @@ export default function CharacterSelectorMin({
   onChange,
 }: CharacterSelectorProps) {
   const user = useSelector((state: RootState) => state.auth.user);
-  const createdBy = user ? user._id : "dummy";
+  const userId = user ? user._id : "default";
 
-  const { data } = useGetCharactersByUserQuery({ userId: createdBy });
-  const characters = (data as any)?.body?.body || [];
+  // Fetch user characters
+  const { data: userData } = useGetCharactersByUserQuery({ userId })
+  // Fetch default characters
+  const { data: defaultData } = useGetDefaultCharactersQuery({ userId })
 
+  // Merge characters: user chars first, then defaults
+  const userCharacters = userData?.body?.body || [];
+  const defaultCharacters = defaultData?.body || [];  // Adjust based on actual API response
+
+  const characters = [...userCharacters, ...defaultCharacters];
   const hasCharacters = characters.length > 0;
 
   return (

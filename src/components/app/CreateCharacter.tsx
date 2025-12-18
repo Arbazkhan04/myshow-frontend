@@ -427,13 +427,13 @@ export function CreateCharacter({ onCharacterCreated }: CreateCharacterProps) {
               </div>
 
               <Tabs 
-                value={characterData.createcustomvoice ? "custom" : "select"} 
-                onValueChange={(value) => updateData("createcustomvoice", value === "custom")}
+                value={characterData.createcustomvoice ?"select": "custom" } 
+                onValueChange={(value) => updateData("selectedVoiceId", value === "select")}
                 className="w-full"
               >
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="custom">Create Custom Voice</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-1">
                   <TabsTrigger value="select">Select Voice</TabsTrigger>
+                  {/* <TabsTrigger value="custom">Create Custom Voice</TabsTrigger> */}
                 </TabsList>
                 
                 <TabsContent value="custom" className="space-y-6 mt-6">

@@ -15,6 +15,19 @@ export const characterApi = baseApi.injectEndpoints({
       providesTags: (result, error, params) => [{ type: 'Character', id: params.id }],
     }),
 
+    // useGetDefaultCharacters
+    getDefaultCharacters: builder.query<
+      operations['CharacterController_getDefaultCharacters']['responses']['200']['content']['application/json'],
+      operations['CharacterController_getDefaultCharacters']['parameters']['query']
+    >({
+      query: (params) => ({
+        url: '/character/default',
+        method: 'GET',
+        params,
+      }),
+      providesTags: ['Character'],
+    }),
+
     // useGetCharactersByUserQuery
     getCharactersByUser: builder.query<
       operations['CharacterController_getCharactersByUser']['responses']['200']['content']['application/json'],
@@ -57,6 +70,7 @@ export const characterApi = baseApi.injectEndpoints({
 
 export const {
   useGetCharacterByIdQuery,
+  useGetDefaultCharactersQuery,
   useGetCharactersByUserQuery,
   useDeleteCharacterMutation,
   useCreateCharacterMutation,

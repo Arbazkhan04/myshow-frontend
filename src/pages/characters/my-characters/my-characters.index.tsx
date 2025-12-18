@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { useGetCharactersByUserQuery, useDeleteCharacterMutation } from "@/api/character"
+import { useGetCharactersByUserQuery, useDeleteCharacterMutation, useGetDefaultCharactersQuery } from "@/api/character"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Loader2, Plus, Trash2, Volume2 } from "lucide-react"
@@ -24,12 +24,12 @@ import {
 import { format } from "date-fns"
 import { VoicePreview } from "@/components/common/voice-preview"
 import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
+    Empty,
+    EmptyContent,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
 } from "@/components/ui/empty"
 import { Users } from "lucide-react"
 import { useNavigate } from "react-router"
@@ -39,10 +39,18 @@ export function MyCharactersIndex() {
     const userId = user ? user._id : null;
     const navigate = useNavigate();
 
-    const { data, isLoading } = useGetCharactersByUserQuery({ userId })
+    // Fetch user characters
+    const { data: userData, isLoading: userLoading, error: userError } = useGetCharactersByUserQuery({ userId })
+    // Fetch default characters
+    const { data: defaultData, isLoading: defaultLoading, error: defaultError } = useGetDefaultCharactersQuery({ userId })
+
     const [deleteCharacter, { isLoading: isDeleting }] = useDeleteCharacterMutation()
     const [openChar, setOpenChar] = useState<any | null>(null)
     const [deletingId, setDeletingId] = useState<string | null>(null)
+
+    const isLoading = userLoading || defaultLoading;
+
+    const hasError = userError || defaultError;
 
     if (isLoading)
         return (
@@ -51,29 +59,38 @@ export function MyCharactersIndex() {
             </div>
         )
 
-    const characters = data?.body?.body || []
 
-if (!characters.length) {
-  return (
-    <Empty className="mt-24">
-      <EmptyHeader>
-        <EmptyMedia variant="icon">
-          <Users className="h-8 w-8" />
-        </EmptyMedia>
-        <EmptyTitle>No characters found</EmptyTitle>
-        <EmptyDescription>
-          Get started by creating your first character.
-        </EmptyDescription>
-      </EmptyHeader>
-      <EmptyContent>
-        <Button onClick={() => navigate("/characters/create")}>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Character
-        </Button>
-      </EmptyContent>
-    </Empty>
-  )
-}
+    if (hasError) {
+        // Optional: Add error handling UI here
+        console.error("Error fetching characters:", userError || defaultError);
+    }
+    // Merge characters: user chars first, then defaults
+    const userCharacters = userData?.body?.body || [];
+    const defaultCharacters = defaultData?.body || [];  // Adjust based on actual API response
+    
+    const characters = [...userCharacters, ...defaultCharacters];
+
+    if (!characters.length) {
+        return (
+            <Empty className="mt-24">
+                <EmptyHeader>
+                    <EmptyMedia variant="icon">
+                        <Users className="h-8 w-8" />
+                    </EmptyMedia>
+                    <EmptyTitle>No characters found</EmptyTitle>
+                    <EmptyDescription>
+                        Get started by creating your first character.
+                    </EmptyDescription>
+                </EmptyHeader>
+                <EmptyContent>
+                    <Button onClick={() => navigate("/characters/create")}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Create Character
+                    </Button>
+                </EmptyContent>
+            </Empty>
+        )
+    }
 
     const handleDelete = async (id: string) => {
         setDeletingId(id)

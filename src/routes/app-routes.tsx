@@ -9,6 +9,7 @@ import { CreateCharacterIndex } from "@/pages/characters/create/character-create
 import { MyCharactersIndex } from "@/pages/characters/my-characters/my-characters.index";
 import { CommunityIndex } from "@/pages/community/community.index";
 import CreateVideoIndex from "@/pages/create/create-video.index";
+import { LandingPage } from "@/pages/landing/LandingPage";
 import { LibraryIndex } from "@/pages/library/library.index";
 import { PlansIndexPage } from "@/pages/plans/plans.index";
 import { SuccessSubscription } from "@/pages/plans/success.subscription";
@@ -21,6 +22,7 @@ export function AppRoutes() {
         <Routes>
 
             <Route path="/payment/success" element={<SuccessSubscription />} />
+            <Route index element={<LandingPage />} />
 
             <Route path="/" element={<MainLayout />}>
                 <Route path="create" element={<CreateVideoIndex />} />

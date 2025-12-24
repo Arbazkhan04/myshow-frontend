@@ -2,7 +2,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import { Play, Sparkles } from "lucide-react";
 import { useRef } from "react";
 
-export function Hero() {
+export function Hero({ onGetStarted }: { onGetStarted: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -94,6 +94,7 @@ export function Hero() {
           className="flex flex-wrap items-center justify-center gap-4"
         >
           <motion.button
+            onClick={onGetStarted}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="group relative overflow-hidden rounded-full bg-gradient-to-r from-[oklch(0.58_0.26_300)] to-[oklch(0.74_0.25_340)] px-8 py-4 text-white shadow-lg transition-shadow hover:shadow-xl"
@@ -110,14 +111,14 @@ export function Hero() {
             ></motion.div>
           </motion.button>
 
-          <motion.button
+          {/* <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="flex items-center gap-2 rounded-full border-2 border-[oklch(0.58_0.26_300)] bg-white px-8 py-4 text-[oklch(0.58_0.26_300)] transition-colors hover:bg-[oklch(0.58_0.26_300)] hover:text-white"
           >
             <Play className="h-5 w-5" />
             Watch Demo
-          </motion.button>
+          </motion.button> */}
         </motion.div>
 
         {/* Floating elements */}

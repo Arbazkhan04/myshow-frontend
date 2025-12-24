@@ -1,4 +1,6 @@
 import { MainLayout } from "@/components/common/main.layout";
+import { ProtectedRoute } from "@/components/common/ProtectedRoute";
+import { AdminRoute } from "@/components/common/AdminRoute";
 import { AdminLayout } from "@/pages/admin/admin.layout";
 import { AdminLoginIndex } from "@/pages/admin/login/admin-login.index";
 import { AdminPlansIndex } from "@/pages/admin/plans-management/admin-plan.index";
@@ -24,30 +26,41 @@ export function AppRoutes() {
             <Route path="/payment/success" element={<SuccessSubscription />} />
             <Route index element={<LandingPage />} />
 
+            {/* Public subscription routes - no authentication required */}
             <Route path="/" element={<MainLayout />}>
-                <Route path="create" element={<CreateVideoIndex />} />
-                <Route path="characters" element={<CharactersLayout />}>
-                    <Route index element={<Navigate to="/characters/create" />} />
-                    <Route path="create" element={<CreateCharacterIndex />} />
-                    <Route path="my-characters" element={<MyCharactersIndex />} />
-                    <Route path="*" element={<Navigate to="/characters/create" />} />
-                </Route>
-                <Route path="library" element={<LibraryIndex />} />
-                <Route path="community" element={<CommunityIndex />} />
-                <Route path="profile" element={<ProfileIndex />} />
                 <Route path="subscription/plans" element={<PlansIndexPage />} />
                 <Route path="subscription/token-packs" element={<TokenPacksIndexPage />} />
-                <Route index element={<Navigate to="create" />} />
             </Route>
 
+            {/* Protected routes - require authentication */}
+            <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<MainLayout />}>
+                    <Route path="create" element={<CreateVideoIndex />} />
+                    <Route path="characters" element={<CharactersLayout />}>
+                        <Route index element={<Navigate to="/characters/create" />} />
+                        <Route path="create" element={<CreateCharacterIndex />} />
+                        <Route path="my-characters" element={<MyCharactersIndex />} />
+                        <Route path="*" element={<Navigate to="/characters/create" />} />
+                    </Route>
+                    <Route path="library" element={<LibraryIndex />} />
+                    <Route path="community" element={<CommunityIndex />} />
+                    <Route path="profile" element={<ProfileIndex />} />
+                    <Route index element={<Navigate to="create" />} />
+                </Route>
+            </Route>
+
+            {/* Admin login - public */}
             <Route path="/admin/login" element={<AdminLoginIndex />} />
 
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<Navigate to="/admin/dashboard" />} />
-                <Route path="users-management" element={<AdminUsersIndex />} />
-                <Route path="plans-management" element={<AdminPlansIndex />} />
-                <Route path="token-packs-management" element={<AdminTokenPacksIndex />} />
-                <Route path="*" element={<Navigate to="/admin/dashboard" />} />
+            {/* Admin routes - require admin role */}
+            <Route element={<AdminRoute />}>
+                <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<Navigate to="/admin/dashboard" />} />
+                    <Route path="users-management" element={<AdminUsersIndex />} />
+                    <Route path="plans-management" element={<AdminPlansIndex />} />
+                    <Route path="token-packs-management" element={<AdminTokenPacksIndex />} />
+                    <Route path="*" element={<Navigate to="/admin/dashboard" />} />
+                </Route>
             </Route>
         </Routes>
     )

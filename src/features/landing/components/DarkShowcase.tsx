@@ -3,7 +3,7 @@ import { Play, Sparkles, Download } from "lucide-react";
 import { useRef } from "react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
-export function DarkShowcase() {
+export function DarkShowcase({ onGetStarted }: { onGetStarted: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.3 });
 
@@ -112,6 +112,7 @@ export function DarkShowcase() {
             </div>
 
             <motion.button
+              onClick={onGetStarted}
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.8 }}

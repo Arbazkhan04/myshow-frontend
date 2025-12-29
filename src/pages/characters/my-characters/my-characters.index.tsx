@@ -67,7 +67,7 @@ export function MyCharactersIndex() {
     // Merge characters: user chars first, then defaults
     const userCharacters = userData?.body?.body || [];
     const defaultCharacters = defaultData?.body || [];  // Adjust based on actual API response
-
+    
     const characters = [...userCharacters, ...defaultCharacters];
 
     if (!characters.length) {
@@ -224,7 +224,7 @@ export function MyCharactersIndex() {
                                 <div className="flex justify-end mt-6">
                                     <AlertDialog>
                                         <AlertDialogTrigger asChild>
-                                            <Button variant="outline" disabled={openChar.isDefault || isDeleting && deletingId === openChar._id}>
+                                            <Button variant="outline" disabled={isDeleting && deletingId === openChar._id}>
                                                 {isDeleting && deletingId === openChar._id ? (
                                                     <Loader2 className="h-4 w-4 animate-spin" />
                                                 ) : (
@@ -248,7 +248,6 @@ export function MyCharactersIndex() {
                                                 <AlertDialogAction
                                                     onClick={() => handleDelete(openChar._id)}
                                                     className="bg-destructive text-white hover:bg-destructive/90"
-
                                                 >
                                                     Delete
                                                 </AlertDialogAction>

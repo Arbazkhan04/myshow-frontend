@@ -1,3 +1,4 @@
+import { LandingPage } from "@/features/landing/LandingPage";
 import { MainLayout } from "@/components/common/main.layout";
 import { ProtectedRoute } from "@/components/common/ProtectedRoute";
 import { AdminRoute } from "@/components/common/AdminRoute";
@@ -21,6 +22,7 @@ import { Navigate, Route, Routes } from "react-router";
 export function AppRoutes() {
     return (
         <Routes>
+      <Route path="/" element={<LandingPage />} />
 
             <Route path="/payment/success" element={<SuccessSubscription />} />
 
@@ -43,7 +45,7 @@ export function AppRoutes() {
                     <Route path="library" element={<LibraryIndex />} />
                     <Route path="community" element={<CommunityIndex />} />
                     <Route path="profile" element={<ProfileIndex />} />
-                    <Route index element={<Navigate to="create" />} />
+                    
                 </Route>
             </Route>
 

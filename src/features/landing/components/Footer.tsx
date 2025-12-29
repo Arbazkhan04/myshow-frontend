@@ -1,20 +1,25 @@
 import { motion } from "motion/react";
-import { Twitter, Instagram, Youtube, Github } from "lucide-react";
+import { Twitter, Instagram, Youtube, Github, Sparkles } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t border-[oklch(0.9_0_0)] bg-white py-12 px-4">
+    <footer className="border-t border-[oklch(0.9_0_0)] bg-white py-6 px-4">
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-8 md:grid-cols-4">
+        <div className="flex items-start">
           {/* Brand */}
           <div>
-            <h4 className="mb-4 bg-gradient-to-r from-[oklch(0.58_0.26_300)] to-[oklch(0.74_0.25_340)] bg-clip-text text-transparent">
-              MyShow.AI
-            </h4>
-            <p className="mb-4 text-sm text-[oklch(0.45_0_0)]">
+            <a href="/" className="flex items-center gap-2 mb-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[oklch(0.58_0.26_300)] to-[oklch(0.74_0.25_340)]">
+                <Sparkles className="h-6 w-6 text-white" />
+              </div>
+              <span className="bg-gradient-to-r from-[oklch(0.58_0.26_300)] to-[oklch(0.74_0.25_340)] bg-clip-text text-xl text-transparent">
+                MyShow.AI
+              </span>
+            </a>
+            <p className="mb-4 text-base text-[oklch(0.45_0_0)]">
               Create stunning AI-generated videos with subtitles in seconds.
             </p>
-            <div className="flex gap-3">
+            {/* <div className="flex gap-3">
               {[
                 { icon: Twitter, href: "#" },
                 { icon: Instagram, href: "#" },
@@ -31,10 +36,10 @@ export function Footer() {
                   <social.icon className="h-4 w-4" />
                 </motion.a>
               ))}
-            </div>
+            </div> */}
           </div>
 
-          {/* Product */}
+          {/* Product *
           <div>
             <h4 className="mb-4 text-[oklch(0.15_0_0)]">Product</h4>
             <ul className="space-y-2 text-sm">
@@ -54,7 +59,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Company */}
+          Company 
           <div>
             <h4 className="mb-4 text-[oklch(0.15_0_0)]">Company</h4>
             <ul className="space-y-2 text-sm">
@@ -74,7 +79,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Support */}
+          Support 
           <div>
             <h4 className="mb-4 text-[oklch(0.15_0_0)]">Support</h4>
             <ul className="space-y-2 text-sm">
@@ -92,10 +97,10 @@ export function Footer() {
                 )
               )}
             </ul>
-          </div>
+          </div> */}
         </div>
 
-        <div className="mt-12 border-t border-[oklch(0.9_0_0)] pt-8 text-center text-sm text-[oklch(0.45_0_0)]">
+        <div className="mt-4 border-t border-[oklch(0.9_0_0)] pt-4 text-center text-sm text-[oklch(0.45_0_0)]">
           <p>© 2025 MyShow.AI. All rights reserved.</p>
         </div>
       </div>

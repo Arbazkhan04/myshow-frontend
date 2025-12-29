@@ -31,11 +31,11 @@ export function Navbar({ onSignIn, onGetStarted }: { onSignIn: () => void, onGet
       }}
       className="fixed top-0 left-0 right-0 z-50 border-b border-transparent transition-all"
     >
-      <div className="mx-auto max-w-7xl px-4 py-4">
+      <div className="mx-auto max-w-7xl  py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <motion.a
-            href="#"
+            href="/"
             whileHover={{ scale: 1.05 }}
             className="flex items-center gap-2"
           >

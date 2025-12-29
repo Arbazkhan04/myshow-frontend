@@ -95,8 +95,8 @@ export function CTA({ onGetStarted }: { onGetStarted: () => void }) {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="flex flex-wrap items-center justify-center gap-4"
         >
-          <motion.a
-            href="/subscription/plans"
+          <motion.button
+            onClick={onGetStarted}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="group relative overflow-hidden rounded-full bg-white px-8 py-4 text-[oklch(0.58_0.26_300)] shadow-lg transition-shadow hover:shadow-xl"
@@ -116,16 +116,16 @@ export function CTA({ onGetStarted }: { onGetStarted: () => void }) {
               whileHover={{ x: "100%" }}
               transition={{ duration: 0.5 }}
             ></motion.div>
-          </motion.a>
+          </motion.button>
 
-          <motion.button
-            onClick={onGetStarted}
+          <motion.a
+            href="/subscription/plans"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="rounded-full border-2 border-white/30 bg-white/10 px-8 py-4 text-white backdrop-blur-sm transition-all hover:border-white/50 hover:bg-white/20"
           >
             View Pricing
-          </motion.button>
+          </motion.a>
         </motion.div>
 
         {/* Stats */}

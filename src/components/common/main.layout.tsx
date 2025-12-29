@@ -21,9 +21,9 @@ export const MainLayout = () => {
   const handleNavigation = (path: string) => navigate(path);
 
   return (
-    <div className="relative flex flex-col h-screen bg-background">
+    <div className="relative w-full flex flex-col h-screen bg-background">
       {/* Main content (full height minus nav on small screens) */}
-      <main className="relative flex-1 overflow-y-auto pb-20 sm:pb-28">
+      <main className="relative w-full flex-1 overflow-y-auto pb-20 sm:pb-28">
         <Outlet />
         <Button variant="ghost" className='absolute top-12 left-6 rounded-full' onClick={() => navigate("/")}>
           <img src="/logo.png" alt="myshow.ai logo" className='w-8 h-8 object-contain' />

@@ -39,6 +39,7 @@ export function Features() {
 
   return (
     <section
+    id='features'
       ref={ref}
       className="relative overflow-hidden bg-gradient-to-b from-white to-[oklch(0.96_0_0)] py-24 px-4"
     >

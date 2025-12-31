@@ -52,10 +52,10 @@ function formatDate(dateStr: string) {
     day % 10 === 1 && day !== 11
       ? "st"
       : day % 10 === 2 && day !== 12
-      ? "nd"
-      : day % 10 === 3 && day !== 13
-      ? "rd"
-      : "th";
+        ? "nd"
+        : day % 10 === 3 && day !== 13
+          ? "rd"
+          : "th";
 
   return `${day}${suffix} ${date.toLocaleString("en-US", {
     month: "short",
@@ -69,24 +69,24 @@ export function ProfileIndex() {
   const createdBy = user?._id;
 
   if (!createdBy) {
-  return (
-    <div className="h-[80vh] flex items-center justify-center p-4">
-      <Card className="max-w-md w-full p-8 text-center space-y-0 rounded-xl shadow-lg border-2 border-dashed border-primary/30">
-        <FiShield className="mx-auto h-10 w-10 text-primary animate-pulse" />
-        <CardTitle className="text-2xl font-bold">Access Restricted</CardTitle>
-        <p className="text-base text-muted-foreground">
-          This profile page requires authentication.
-        </p>
-        <div className="bg-primary/5 p-3 rounded-lg border border-primary/10">
+    return (
+      <div className="h-[80vh] flex items-center justify-center p-4">
+        <Card className="max-w-md w-full p-8 text-center space-y-0 rounded-xl shadow-lg border-2 border-dashed border-primary/30">
+          <FiShield className="mx-auto h-10 w-10 text-primary animate-pulse" />
+          <CardTitle className="text-2xl font-bold">Access Restricted</CardTitle>
+          <p className="text-base text-muted-foreground">
+            This profile page requires authentication.
+          </p>
+          <div className="bg-primary/5 p-3 rounded-lg border border-primary/10">
             <p className="font-medium text-sm text-foreground/80 dark:text-primary-foreground/90">
-                Please click on the Sign In button in the top-right corner
-                to log in or create an account.
+              Please click on the Sign In button in the top-right corner
+              to log in or create an account.
             </p>
-        </div>
-      </Card>
-    </div>
-  );
-}
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   const { data, isLoading, error } = useGetUserByIdQuery({ id: createdBy });
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
@@ -124,7 +124,7 @@ export function ProfileIndex() {
   }
 
   // Handle Error/No Profile State
-  if (!profile) return <div className="text-center p-10">Could not load profile data.</div>;
+  if (!profile) return <div className="w-full h-full flex items-center justify-center">Could not load profile data.</div>;
 
   /* ✅ REAL UPDATE HANDLER */
   const handleSave = async () => {
@@ -137,20 +137,20 @@ export function ProfileIndex() {
     console.log("PUT PAYLOAD →", payload);
 
     try {
-        await updateUser({
-            path: { id: createdBy },
-            body: payload,
-        }).unwrap();
-        setIsEditing(false);
+      await updateUser({
+        path: { id: createdBy },
+        body: payload,
+      }).unwrap();
+      setIsEditing(false);
     } catch (err) {
-        // Handle error notification here
-        console.error("Failed to update user:", err);
+      // Handle error notification here
+      console.error("Failed to update user:", err);
     }
   };
 
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-10">
-      
+
       {/* 🌟 PROFILE HEADER & EDIT/SAVE */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-border">
         <div className="flex items-center gap-6">
@@ -166,7 +166,7 @@ export function ProfileIndex() {
             </Avatar>
             {isEditing && (
               <div className="absolute -bottom-2 -right-2">
-                 {/* This uploader will update the profilePic state */}
+                {/* This uploader will update the profilePic state */}
                 <SimpleUploader
                   value={""}
                   setValue={setProfilePic}
@@ -206,7 +206,7 @@ export function ProfileIndex() {
             </div>
           </div>
         </div>
-        
+
         {/* EDIT/SAVE BUTTON */}
         {!isEditing ? (
           <Button onClick={() => setIsEditing(true)} variant="outline" className="w-full sm:w-auto mt-4 sm:mt-0">
@@ -242,38 +242,38 @@ export function ProfileIndex() {
 
         {/* Plan Card */}
         {profile.currentPlan && (
-            <Card className="shadow-lg border-l-4 border-secondary">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                    Current Plan
-                </CardTitle>
-                <FiPackage className="h-5 w-5 text-secondary" />
-                </CardHeader>
-                <CardContent>
-                <div className="text-2xl font-bold">{profile.currentPlan.name}</div>
-                <p className="text-xs text-muted-foreground flex items-center gap-1 pt-1">
-                    ${profile.currentPlan.priceUSD} / <FiClock className="h-3 w-3" /> {profile.currentPlan.interval}
-                </p>
-                </CardContent>
-            </Card>
+          <Card className="shadow-lg border-l-4 border-secondary">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Current Plan
+              </CardTitle>
+              <FiPackage className="h-5 w-5 text-secondary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{profile.currentPlan.name}</div>
+              <p className="text-xs text-muted-foreground flex items-center gap-1 pt-1">
+                ${profile.currentPlan.priceUSD} / <FiClock className="h-3 w-3" /> {profile.currentPlan.interval}
+              </p>
+            </CardContent>
+          </Card>
         )}
 
         {/* Action Card - Upgrade Plan */}
         <Card className="shadow-lg border-l-4 border-accent hidden lg:block">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                    Need More Features?
-                </CardTitle>
-                <FiZap className="h-5 w-5 text-accent" />
-            </CardHeader>
-            <CardContent>
-                <Button onClick={() => navigate("/subscription/plans")} size="sm" className="w-full">
-                    View Subscription Plans
-                </Button>
-                <p className="text-xs text-muted-foreground pt-1">
-                    Upgrade for more features and tokens.
-                </p>
-            </CardContent>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Need More Features?
+            </CardTitle>
+            <FiZap className="h-5 w-5 text-accent" />
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => navigate("/subscription/plans")} size="sm" className="w-full">
+              View Subscription Plans
+            </Button>
+            <p className="text-xs text-muted-foreground pt-1">
+              Upgrade for more features and tokens.
+            </p>
+          </CardContent>
         </Card>
       </div>
 
@@ -333,29 +333,29 @@ export function ProfileIndex() {
         <Card className="rounded-xl shadow-md border-2 border-dashed border-secondary/50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-                <FiPackage className="h-5 w-5 text-secondary" />
-                Subscription Plan Details
+              <FiPackage className="h-5 w-5 text-secondary" />
+              Subscription Plan Details
             </CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-4">
             <div className="flex justify-between items-start">
-                <div>
-                    <p className="text-xl font-bold">
-                        {profile.currentPlan.name}
-                    </p>
-                    <Badge variant="default" className="mt-1 text-xs">
-                        {profile.currentPlan.tier} Tier
-                    </Badge>
-                </div>
-                <div className="text-right">
-                    <p className="text-2xl font-extrabold text-primary">
-                        ${profile.currentPlan.priceUSD}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                        /{profile.currentPlan.interval}
-                    </p>
-                </div>
+              <div>
+                <p className="text-xl font-bold">
+                  {profile.currentPlan.name}
+                </p>
+                <Badge variant="default" className="mt-1 text-xs">
+                  {profile.currentPlan.tier} Tier
+                </Badge>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-extrabold text-primary">
+                  ${profile.currentPlan.priceUSD}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  /{profile.currentPlan.interval}
+                </p>
+              </div>
             </div>
 
             <p className="text-sm text-muted-foreground">
@@ -365,14 +365,14 @@ export function ProfileIndex() {
             <Separator />
 
             <div className="space-y-2">
-                <p className="text-sm font-medium">Included Features:</p>
-                <div className="flex flex-wrap gap-2">
-                    {profile.currentPlan.features.map((f: string) => (
-                        <Badge key={f} variant="outline" className="bg-muted text-muted-foreground">
-                            {f}
-                        </Badge>
-                    ))}
-                </div>
+              <p className="text-sm font-medium">Included Features:</p>
+              <div className="flex flex-wrap gap-2">
+                {profile.currentPlan.features.map((f: string) => (
+                  <Badge key={f} variant="outline" className="bg-muted text-muted-foreground">
+                    {f}
+                  </Badge>
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -385,7 +385,7 @@ export function ProfileIndex() {
           <CardHeader>
             <CardTitle>Upgrade Your Plan</CardTitle>
             <CardDescription>
-                Unlock premium features and get more tokens monthly.
+              Unlock premium features and get more tokens monthly.
             </CardDescription>
           </CardHeader>
           <CardFooter>
@@ -403,7 +403,7 @@ export function ProfileIndex() {
           <CardHeader>
             <CardTitle>Top Up Tokens</CardTitle>
             <CardDescription>
-                Purchase one-time token packs for additional usage.
+              Purchase one-time token packs for additional usage.
             </CardDescription>
           </CardHeader>
           <CardFooter>

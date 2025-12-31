@@ -17,10 +17,23 @@ export function Navbar({ onSignIn, onGetStarted }: { onSignIn: () => void, onGet
   const backdropBlur = useTransform(scrollY, [0, 100], ["blur(0px)", "blur(10px)"]);
 
   const navItems = [
-    { key: "Features", path: "#" },
+    { key: "Features", path: "#features" },
     { key: "Pricing", path: "/subscription/plans" },
     { key: "Community", path: "/community" },
   ];
+
+  // Smooth scroll handler for anchor links
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    if (path.startsWith('#')) {
+      e.preventDefault();
+      const id = path.slice(1);
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        setIsOpen(false); // close mobile menu if open
+      }
+    }
+  };
 
   const { isAuthenticated } = useAuth(); // TO DO: replace with actual auth state
   return (
@@ -49,18 +62,17 @@ export function Navbar({ onSignIn, onGetStarted }: { onSignIn: () => void, onGet
 
           {/* Desktop Menu */}
           <div className="hidden items-center gap-8 md:flex">
-            {navItems.map(
-              (item, index) => (
-                <motion.a
-                  key={index}
-                  href={item.path}
-                  whileHover={{ y: -2 }}
-                  className="text-[oklch(0.45_0_0)] transition-colors hover:text-[oklch(0.58_0.26_300)]"
-                >
-                  {item.key}
-                </motion.a>
-              )
-            )}
+            {navItems.map((item, index) => (
+              <motion.a
+                key={index}
+                href={item.path}
+                whileHover={{ y: -2 }}
+                className="text-[oklch(0.45_0_0)] transition-colors hover:text-[oklch(0.58_0.26_300)]"
+                onClick={e => handleNavClick(e, item.path)}
+              >
+                {item.key}
+              </motion.a>
+            ))}
           </div>
 
           {/* Desktop CTA */}
@@ -113,20 +125,19 @@ export function Navbar({ onSignIn, onGetStarted }: { onSignIn: () => void, onGet
           className="overflow-hidden md:hidden"
         >
           <div className="flex flex-col gap-4 pt-4">
-            {navItems.map(
-              (item, index) => (
-                <motion.a
-                  key={index}
-                  href={item.path}
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={isOpen ? { x: 0, opacity: 1 } : {}}
-                  transition={{ delay: index * 0.1 }}
-                  className="text-[oklch(0.45_0_0)] transition-colors hover:text-[oklch(0.58_0.26_300)]"
-                >
-                  {item.key}
-                </motion.a>
-              )
-            )}
+            {navItems.map((item, index) => (
+              <motion.a
+                key={index}
+                href={item.path}
+                initial={{ x: -20, opacity: 0 }}
+                animate={isOpen ? { x: 0, opacity: 1 } : {}}
+                transition={{ delay: index * 0.1 }}
+                className="text-[oklch(0.45_0_0)] transition-colors hover:text-[oklch(0.58_0.26_300)]"
+                onClick={e => handleNavClick(e, item.path)}
+              >
+                {item.key}
+              </motion.a>
+            ))}
             <div className="flex flex-col gap-2 border-t border-[oklch(0.9_0_0)] pt-4">
               {isAuthenticated ? (
                 <div className="flex justify-center">

@@ -42,7 +42,7 @@ const getTierBadgeVariant = (tier: keyof typeof PlanTiers): "default" | "seconda
     case "PRO":
       return "outline";
     case "AGENCY":
-        return "destructive"; // Using a different variant for high tier
+      return "destructive"; // Using a different variant for high tier
     default:
       return "secondary";
   }
@@ -56,13 +56,27 @@ export function PlansIndexPage() {
   const createdBy = user?._id || "dummy";
 
   // RESTORING TIER STATE AND INITIALIZING INTERVAL STATE
-  const [selectedTier, setSelectedTier] = useState<PlanTier>("ALL"); 
+  const [selectedTier, setSelectedTier] = useState<PlanTier>("ALL");
   const [selectedInterval, setSelectedInterval] = useState<PlanInterval>("MONTHLY");
   const [loadingPlanId, setLoadingPlanId] = useState<string | null>(null);
 
   // --- Data Filtering and Loading States ---
-  if (isLoading) return <p className="text-center mt-12 text-lg font-medium text-muted-foreground">Loading subscription plans...</p>;
-  if (isError || !data?.body?.plans) return <p className="text-center mt-12 text-lg text-destructive">Failed to load plans. Please try again.</p>;
+  if (isLoading) {
+    return (
+      <div className="w-full h-full n flex flex-col items-center justify-center gap-2">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <p className="text-center text-lg font-medium text-muted-foreground">Loading subscription plans...</p>
+      </div>
+    );
+  }
+  // Handle error state
+  if (isError || !data?.body?.plans) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <p className="text-center mt-12 text-lg text-destructive">Failed to load plans. Please try again.</p>
+      </div>
+    );
+  }
 
   // Filter plans based on state (selectedTier AND selectedInterval)
   const plans: Plan[] = (data.body.plans as Plan[]).filter(
@@ -76,7 +90,7 @@ export function PlansIndexPage() {
     setLoadingPlanId(planId);
     try {
       const res: any = await createCheckout({ userId: createdBy, planId }).unwrap();
-      
+
       const redirectUrl = res?.body?.url;
 
       if (redirectUrl) {
@@ -130,9 +144,9 @@ export function PlansIndexPage() {
             <TabsList className="bg-muted p-1 rounded-lg shadow-sm grid grid-cols-3 md:flex md:w-auto">
               <TabsTrigger value="ALL" className="py-2 px-4 text-sm whitespace-nowrap">Both</TabsTrigger>
               {Object.keys(PlanIntervals).map((interval) => (
-                <TabsTrigger 
-                  key={interval} 
-                  value={interval} 
+                <TabsTrigger
+                  key={interval}
+                  value={interval}
                   className="py-2 px-4 text-sm whitespace-nowrap"
                 >
                   {interval === "ANNUAL" ? "Annual" : "Monthly"}
@@ -153,20 +167,20 @@ export function PlansIndexPage() {
             const isFeatured = plan.tier === "PRO" || plan.tier === "CREATOR"; // Highlight middle tiers
 
             return (
-              <Card 
-                key={plan._id} 
+              <Card
+                key={plan._id}
                 className={`flex flex-col justify-between p-6 h-full transition-all duration-300 ${isFeatured ? 'border-primary shadow-lg ring-2 ring-primary/50' : 'border-border hover:shadow-md'}`}
               >
                 <CardHeader className="p-0 mb-6 space-y-3">
-                    <div className="flex items-center justify-between">
-                        <CardTitle className="text-3xl font-bold text-foreground">
-                            {plan.name}
-                        </CardTitle>
-                        <Badge variant={getTierBadgeVariant(plan.tier)} className="text-xs font-semibold uppercase">
-                            {plan.tier}
-                        </Badge>
-                    </div>
-                  
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-3xl font-bold text-foreground">
+                      {plan.name}
+                    </CardTitle>
+                    <Badge variant={getTierBadgeVariant(plan.tier)} className="text-xs font-semibold uppercase">
+                      {plan.tier}
+                    </Badge>
+                  </div>
+
                   <CardDescription className="text-muted-foreground min-h-[40px]">
                     {plan.description}
                   </CardDescription>
@@ -175,12 +189,12 @@ export function PlansIndexPage() {
                 <CardContent className="p-0 space-y-6 flex-grow">
                   {/* Price */}
                   <div className="border-b pb-4 border-border/70">
-                      <div className="text-5xl font-extrabold text-foreground">
-                          {priceDisplay}
-                          <span className="text-base font-medium text-muted-foreground">
-                              {plan.priceUSD > 0 && intervalText}
-                          </span>
-                      </div>
+                    <div className="text-5xl font-extrabold text-foreground">
+                      {priceDisplay}
+                      <span className="text-base font-medium text-muted-foreground">
+                        {plan.priceUSD > 0 && intervalText}
+                      </span>
+                    </div>
                   </div>
 
                   <div className="space-y-4">
@@ -219,8 +233,8 @@ export function PlansIndexPage() {
                 </CardContent>
 
                 <div className="pt-6 mt-6 border-t border-border">
-                  <Button 
-                    onClick={() => handleSubscribe(plan._id)} 
+                  <Button
+                    onClick={() => handleSubscribe(plan._id)}
                     disabled={isSubscribing}
                     className="w-full py-3 text-lg font-semibold"
                     variant={isFeatured ? "default" : "secondary"}

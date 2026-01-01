@@ -22,7 +22,7 @@ import { Navigate, Route, Routes } from "react-router";
 export function AppRoutes() {
     return (
         <Routes>
-      <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<LandingPage />} />
 
             <Route path="/payment/success" element={<SuccessSubscription />} />
 
@@ -45,7 +45,7 @@ export function AppRoutes() {
                     <Route path="library" element={<LibraryIndex />} />
                     <Route path="community" element={<CommunityIndex />} />
                     <Route path="profile" element={<ProfileIndex />} />
-                    
+
                 </Route>
             </Route>
 
